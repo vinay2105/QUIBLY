@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Tweet by @{{ tweet.user.username }}{% endblock %}
+{% block content %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body d-flex">
+        <img src="{{ tweet.user.profile.profile_pic.url }}" class="rounded-circle me-3" width="60" height="60" alt="Profile">
+        <div>
+            <h5 class="mb-1">@{{ tweet.user.username }}</h5>
+            <p>{{ tweet.content }}</p>
+            <p class="text-muted small">{{ tweet.created_at|date:"M d, H:i" }}</p>
+
+            <!-- Like button -->
+            <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                    ❤️ {{ tweet.total_likes }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Feed</a>
+<h5>Comments</h5>
+
+<form method="POST" class="mb-3" id="comment-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+</form>
+
+
+{% for comment in comments %}
+    <div class="border-start ps-3 mb-2">
+        <strong>@{{ comment.user.username }}</strong>: {{ comment.content }}<br>
+        <small class="text-muted">{{ comment.created_at|date:"M d, H:i" }}</small>
+    </div>
+{% empty %}
+    <p class="text-muted">No comments yet. Be the first to reply.</p>
+{% endfor %}
+
+{% endblock %}

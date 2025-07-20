@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Profile - Quibly{% endblock %}
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-md-4 text-center">
+        <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle shadow" width="150" height="150" alt="Profile Picture">
+        <h4 class="mt-3">@{{ user.username }}</h4>
+        <p class="text-muted">{{ user.email }}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary mt-2">Edit Profile</a>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">About Me</h5>
+                <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
+                <p><strong>Gender:</strong> {{ user.profile.get_gender_display|default:"Not specified" }}</p>
+                <p><strong>Date of Birth:</strong> {{ user.profile.dob|date:"F d, Y"|default:"Not provided" }}</p>
+                <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<h4>My Tweets</h4>
+{% if user.tweets.all %}
+    {% for tweet in user.tweets.all %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <p class="card-text">{{ tweet.content }}</p>
+                <p class="text-muted small mb-0">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">You haven't posted any tweets yet.</p>
+{% endif %}
+
+{% endblock %}
+
