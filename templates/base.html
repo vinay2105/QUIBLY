@@ -4,32 +4,58 @@
     <meta charset="UTF-8">
     <title>{% block title %}Quibly{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Quibly</a>
+            <a class="navbar-brand fw-bold" href="/">Quibly</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-center">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+                        <!-- Home -->
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/" title="Home">
+                                <i class="bi bi-house-door-fill fs-5"></i>
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile">Profile</a>
+
+                        <!-- Notifications -->
+                        <li class="nav-item me-2 position-relative">
+                            <a class="nav-link" href="/notifications" title="Notifications">
+                                <i class="bi bi-bell-fill fs-5"></i>
+                                {% if unread_count > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ unread_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/tweet">Post Tweet</a>
+
+                        <!-- Profile -->
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/profile" title="My Profile">
+                                <i class="bi bi-person-circle fs-5"></i>
+                            </a>
                         </li>
+
+                        <!-- Post Tweet -->
+                        <li class="nav-item me-3">
+                            <a class="nav-link" href="/tweet" title="Post Tweet">
+                                <i class="bi bi-pencil-square fs-5"></i>
+                            </a>
+                        </li>
+
+                        <!-- Logout -->
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="/logout">Logout</a>
                         </li>
                     {% else %}
-                        <li class="nav-item">
+                        <li class="nav-item me-2">
                             <a class="nav-link" href="/login">Login</a>
                         </li>
                         <li class="nav-item">
@@ -54,4 +80,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 

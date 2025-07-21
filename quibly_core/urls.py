@@ -16,6 +16,12 @@ urlpatterns = [
     path('forgot-password/', views.forgot_password_view, name='forgot_password'),
 path('verify-reset-otp/', views.verify_reset_otp_view, name='verify_reset_otp'),
 path('reset-password/', views.reset_password_view, name='reset_password'),
+path('user/<str:username>/follow-toggle/', views.follow_toggle_view, name='follow_toggle'),
+path('user/<str:username>/', views.public_profile_view, name='public_profile'),
+path('notifications/', views.notifications_view, name='notifications'),
+
+
+
 
 
 

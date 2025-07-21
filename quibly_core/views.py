@@ -231,6 +231,86 @@ def reset_password_view(request):
             messages.error(request, 'Passwords do not match.')
     return render(request, 'reset_password.html')
 
+from django.shortcuts import get_object_or_404
+from .models import Notification
+
+def follow_toggle_view(request, username):
+    target_user = get_object_or_404(User, username=username)
+    profile = request.user.profile
+
+    if profile != target_user.profile:
+        if target_user.profile in profile.following.all():
+            profile.following.remove(target_user.profile)
+        else:
+            profile.following.add(target_user.profile)
+
+    if target_user.profile not in profile.following.all():
+        profile.following.add(target_user.profile)
+
+    # Notification
+    Notification.objects.create(
+        recipient=target_user,
+        message=f"@{request.user.username} followed you."
+    )
+
+    return redirect('public_profile', username=username)
+
+
+def public_profile_view(request, username):
+    target_user = get_object_or_404(User, username=username)
+    is_following = False
+
+    if request.user.is_authenticated:
+        is_following = target_user.profile in request.user.profile.following.all()
+
+    return render(request, 'public_profile.html', {
+        'target_user': target_user,
+        'is_following': is_following
+    })
+
+def notifications_view(request):
+    notifications = request.user.notifications.order_by('-timestamp')
+    unread_count = request.user.notifications.filter(is_read=False).count()
+
+    return render(request, 'notifications.html', {'notifications': notifications})
+
+def like_tweet_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+    user = request.user
+
+    if user in tweet.likes.all():
+        tweet.likes.remove(user)
+    else:
+        tweet.likes.add(user)
+        
+        # 🔔 Notification for tweet owner
+        if tweet.user != user:  # don’t notify yourself
+            Notification.objects.create(
+                recipient=tweet.user,
+                message=f"@{user.username} liked your tweet."
+            )
+
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+@login_required
+def comment_tweet_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Comment.objects.create(user=request.user, tweet=tweet, content=content)
+
+            # 🔔 Notification to tweet owner
+            if tweet.user != request.user:
+                Notification.objects.create(
+                    recipient=tweet.user,
+                    message=f"@{request.user.username} commented on your tweet."
+                )
+
+    return redirect('view_tweet', tweet_id=tweet_id)
+
 
 
 

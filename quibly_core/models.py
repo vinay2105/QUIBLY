@@ -36,5 +36,22 @@ class UserProfile(models.Model):
     bio = models.TextField(blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg')
 
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
+
+
     def __str__(self):
         return self.user.username
+    
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"To: {self.recipient.username} - {self.message}"
+
