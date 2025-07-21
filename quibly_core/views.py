@@ -234,6 +234,7 @@ def reset_password_view(request):
 from django.shortcuts import get_object_or_404
 from .models import Notification
 
+@login_required
 def follow_toggle_view(request, username):
     target_user = get_object_or_404(User, username=username)
     profile = request.user.profile
@@ -244,8 +245,7 @@ def follow_toggle_view(request, username):
         else:
             profile.following.add(target_user.profile)
 
-    if target_user.profile not in profile.following.all():
-        profile.following.add(target_user.profile)
+    return redirect('public_profile', username=username)
 
     # Notification
     Notification.objects.create(
