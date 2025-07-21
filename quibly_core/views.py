@@ -10,14 +10,21 @@ from .models import Tweet, UserProfile
 from .forms import RegisterForm, TweetForm, UserProfileForm
 
 
+import random
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from .forms import RegisterForm
+
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             otp = str(random.randint(100000, 999999))
 
-            # Save registration data and OTP in session
-            request.session['reg_data'] = form.cleaned_data
+            # Save data to session (but store passwords safely)
+            request.session['reg_username'] = form.cleaned_data['username']
+            request.session['reg_email'] = form.cleaned_data['email']
+            request.session['reg_password'] = form.cleaned_data['password1']
             request.session['otp'] = otp
 
             # Send OTP to email
@@ -41,6 +48,10 @@ def verify_otp_view(request):
         session_otp = request.session.get('otp')
         reg_data = request.session.get('reg_data')
 
+        if not reg_data or not session_otp:
+            messages.error(request, "Session expired. Please register again.")
+            return redirect('register')
+
         if entered_otp == session_otp:
             # Create user
             user = User.objects.create_user(
@@ -52,17 +63,17 @@ def verify_otp_view(request):
             # Create empty profile
             UserProfile.objects.create(user=user)
 
+            # Log the user in
             login(request, user)
 
-            # Clear session
-            request.session.pop('otp')
-            request.session.pop('reg_data')
+            # Clear the whole session
+            request.session.flush()
 
             messages.success(request, "Registration complete!")
             return redirect('edit_profile')  # Redirect to profile completion
         else:
             messages.error(request, "Invalid OTP. Please try again.")
-            return redirect('verify_otp')
+            return render(request, 'verify_otp.html')
 
     return render(request, 'verify_otp.html')
 

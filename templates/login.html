@@ -1,28 +1,110 @@
 {% extends 'base.html' %}
 {% block title %}Login - Quibly{% endblock %}
+
 {% block content %}
-<h2>Login</h2>
+<style>
+    .auth-container {
+    max-width: 420px;
+    margin: 3rem auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);  /* This line gives it the shadow */
+    padding: 2rem;
+}
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-warning">{{ message }}</div>
-    {% endfor %}
-{% endif %}
+    .quibly-logo {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #343a40;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: 1px;
+    }
 
-<form method="POST">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" name="username" required>
+    .auth-heading {
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        color: #333;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        border-radius: 8px;
+    }
+
+    .btn-auth {
+        border-radius: 8px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        background-color: #343a40;
+        border-color: #343a40;
+    }
+
+    .btn-auth:hover {
+        background-color: #23272b;
+        border-color: #23272b;
+    }
+
+    .form-footer {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .form-footer a {
+        text-decoration: none;
+        color: #343a40;
+    }
+
+    .form-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .alert {
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="quibly-logo">Quibly</div>
+    <div class="auth-heading">Welcome Back</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" required>
+        </div>
+
+        <div class="form-footer mb-3">
+            <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-auth text-white">Login</button>
+        </div>
+    </form>
+
+    <div class="form-footer mt-3">
+        New to Quibly? <a href="{% url 'register' %}">Register here</a>
     </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" name="password" required>
-    </div>
-    <p class="mt-2"><a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-
-<p class="mt-3">New to Quibly? <a href="{% url 'register' %}">Register here</a></p>
+</div>
 {% endblock %}
+
+
+

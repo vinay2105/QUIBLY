@@ -1,25 +1,104 @@
 {% extends 'base.html' %}
 {% block title %}Register - Quibly{% endblock %}
+
 {% block content %}
-<h2>Register</h2>
-<form method="POST">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" name="username" required>
+<style>
+    .auth-container {
+        max-width: 420px;
+        margin: 3rem auto;
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+    }
+
+    .quibly-logo {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #343a40;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .auth-heading {
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        color: #333;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        border-radius: 8px;
+    }
+
+    .btn-auth {
+        border-radius: 8px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        background-color: #343a40;
+        border-color: #343a40;
+    }
+
+    .btn-auth:hover {
+        background-color: #23272b;
+        border-color: #23272b;
+    }
+
+    .form-footer {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .form-footer a {
+        text-decoration: none;
+        color: #343a40;
+    }
+
+    .form-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="quibly-logo">Welcome to Quibly</div>
+    <div class="auth-heading">Create Your Account</div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password1" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password1" required>
+        </div>
+        <div class="mb-3">
+            <label for="password2" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" name="password2" required>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-auth text-white">Register</button>
+        </div>
+    </form>
+
+    <div class="form-footer mt-3">
+        Already on Quibly? <a href="{% url 'login' %}">Login here</a>
     </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="password1" class="form-label">Password</label>
-        <input type="password" class="form-control" name="password1" required>
-    </div>
-    <div class="mb-3">
-        <label for="password2" class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" name="password2" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 {% endblock %}
+
+
+
+
+
