@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP{% endblock %}
+{% block content %}
+<h3>Enter OTP</h3>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="otp" class="form-control mb-3" placeholder="6-digit OTP" required>
+    <button class="btn btn-success">Verify</button>
+</form>
+{% endblock %}

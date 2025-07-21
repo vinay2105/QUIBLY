@@ -170,6 +170,69 @@ def view_tweet_view(request, tweet_id):
     return render(request, 'view_tweet.html', {'tweet': tweet, 'form': form, 'comments': comments})
 
 
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        try:
+            user = User.objects.get(email=email)
+            otp = str(random.randint(100000, 999999))
+            request.session['reset_email'] = email
+            request.session['reset_otp'] = otp
+
+            send_mail(
+                'Your OTP to reset password - Quibly',
+                f'Your OTP is: {otp}',
+                'noreply@quibly.com',
+                [email],
+                fail_silently=False
+            )
+            messages.success(request, 'OTP sent to your email.')
+            return redirect('verify_reset_otp')
+        except User.DoesNotExist:
+            messages.error(request, 'No account with this email.')
+    return render(request, 'forgot_password.html')
+
+
+def verify_reset_otp_view(request):
+    if request.method == 'POST':
+        entered_otp = request.POST['otp']
+        if entered_otp == request.session.get('reset_otp'):
+            return redirect('reset_password')
+        else:
+            messages.error(request, 'Invalid OTP')
+            return redirect('verify_reset_otp')
+    return render(request, 'verify_reset_otp.html')
+
+
+def reset_password_view(request):
+    if request.method == 'POST':
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if password1 == password2:
+            email = request.session.get('reset_email')
+            try:
+                user = User.objects.get(email=email)
+                user.password = make_password(password1)
+                user.save()
+
+                # Clear session
+                request.session.pop('reset_email')
+                request.session.pop('reset_otp')
+
+                messages.success(request, 'Password reset successful.')
+                return redirect('login')
+            except User.DoesNotExist:
+                messages.error(request, 'Something went wrong.')
+        else:
+            messages.error(request, 'Passwords do not match.')
+    return render(request, 'reset_password.html')
+
+
+
 
 
 
