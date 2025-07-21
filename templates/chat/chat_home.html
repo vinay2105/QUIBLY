@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<style>
+    .conversation-container {
+        max-width: 600px;
+        margin: auto;
+        padding-top: 2rem;
+    }
+
+    .conversation-card {
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        transition: box-shadow 0.2s;
+    }
+
+    .conversation-card:hover {
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f1f1;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .conversation-item:last-child {
+        border-bottom: none;
+    }
+
+    .conversation-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .conversation-item img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+
+    .conversation-name {
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .no-chat {
+        padding: 2rem;
+        text-align: center;
+        color: #888;
+    }
+</style>
+
+<div class="conversation-container">
+    <h4 class="mb-4 text-center">Your Conversations</h4>
+
+    {% if threads %}
+        <div class="conversation-card">
+            {% for thread in threads %}
+                {% for user in thread.users.all %}
+                    {% if user != request.user %}
+                        <a href="{% url 'chat_detail' user.username %}" class="conversation-item">
+                            <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
+                            <div class="conversation-name">@{{ user.username }}</div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-chat">No conversations yet. Start chatting with someone you follow.</div>
+    {% endif %}
+</div>
+{% endblock %}
+

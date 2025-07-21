@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Chat with {{ other_user.username }}{% endblock %}
+
+{% block content %}
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .chat-container {
+        max-width: 600px;
+        height: calc(100vh - 70px); /* Adjust based on navbar height */
+        margin: auto;
+        background: #f9f9f9;
+        border-radius: 1rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        padding: 1rem;
+        background-color: #ffffff;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+    }
+
+    .chat-header img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .chat-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #f1f3f5;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-message {
+        margin-bottom: 15px;
+        max-width: 70%;
+        padding: 0.6rem 1rem;
+        border-radius: 20px;
+        word-wrap: break-word;
+        position: relative;
+    }
+
+    .sent {
+        background-color: #d1e7dd;
+        align-self: flex-end;
+        text-align: right;
+    }
+
+    .received {
+        background-color: #ffffff;
+        align-self: flex-start;
+    }
+
+    .chat-timestamp {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 4px;
+    }
+
+    .chat-footer {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid #dee2e6;
+        background-color: #ffffff;
+    }
+
+    .chat-footer .form-control {
+        border-radius: 25px 0 0 25px;
+        height: 42px;
+    }
+
+    .chat-footer .btn {
+        border-radius: 0 25px 25px 0;
+        height: 42px;
+    }
+</style>
+
+<div class="container-fluid px-2 px-md-0 py-3">
+    <div class="chat-container">
+        
+        <!-- Header -->
+        <div class="chat-header">
+            <img src="{{ other_user.profile.profile_pic.url }}" alt="Profile Picture">
+            <h5 class="mb-0">@{{ other_user.username }}</h5>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-body" id="chat-body">
+            {% if chat_messages %}
+                {% for msg in chat_messages %}
+                    <div class="chat-message {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                        {{ msg.text }}
+                        <div class="chat-timestamp">{{ msg.timestamp|date:"M d, H:i" }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center text-muted mt-5">No messages yet. Start the conversation!</div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="chat-footer">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="message" class="form-control" placeholder="Type a message..." required>
+                    <button class="btn btn-outline-primary" type="submit">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll to bottom
+    const chatBody = document.getElementById("chat-body");
+    chatBody.scrollTop = chatBody.scrollHeight;
+</script>
+{% endblock %}
+
+
+

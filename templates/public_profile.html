@@ -1,42 +1,128 @@
 {% extends 'base.html' %}
 {% block title %}{{ target_user.username }}'s Profile{% endblock %}
-{% block content %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body d-flex align-items-center">
-        <img src="{{ target_user.profile.profile_pic.url }}" width="100" height="100" class="rounded-circle me-3 border" alt="Profile Pic">
-        <div class="w-100">
-            <h3 class="mb-1">@{{ target_user.username }}</h3>
-            <p class="mb-1"><strong>Bio:</strong> {{ target_user.profile.bio|default:"No bio yet." }}</p>
-            <p class="mb-2">
+{% block content %}
+<style>
+    .profile-card {
+        max-width: 700px;
+        margin: auto;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-header {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-header img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 20px;
+        border: 3px solid #dee2e6;
+    }
+
+    .profile-info h3 {
+        margin-bottom: 6px;
+    }
+
+    .profile-info p {
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .tweet-card {
+        max-width: 700px;
+        margin: auto;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .tweet-card .card-body {
+        padding: 1rem 1.25rem;
+    }
+
+    .tweet-header {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #555;
+    }
+
+    .no-tweets {
+        text-align: center;
+        color: #888;
+        margin-top: 2rem;
+    }
+
+    .section-heading {
+        max-width: 700px;
+        margin: 30px auto 15px auto;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+</style>
+
+<!-- Profile Card -->
+<div class="profile-card bg-white mb-4">
+    <div class="profile-header">
+        <img src="{{ target_user.profile.profile_pic.url }}" alt="Profile Picture">
+        <div class="profile-info w-100">
+            <h3>@{{ target_user.username }}</h3>
+            <p><strong>Bio:</strong> {{ target_user.profile.bio|default:"No bio yet." }}</p>
+            <p>
                 <strong>Followers:</strong> {{ target_user.profile.followers.count }} |
                 <strong>Following:</strong> {{ target_user.profile.following.count }}
             </p>
 
             {% if user.is_authenticated and user != target_user %}
-                <form method="post" action="{% url 'follow_toggle' target_user.username %}">
-                    {% csrf_token %}
-                    <button class="btn {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}">
-                        {% if is_following %}Unfollow{% else %}Follow{% endif %}
-                    </button>
-                </form>
+                <div class="profile-actions">
+                    <form method="post" action="{% url 'follow_toggle' target_user.username %}">
+                        {% csrf_token %}
+                        <button class="btn {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}">
+                            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                        </button>
+                    </form>
+
+                    {% if user.profile in target_user.profile.followers.all and target_user.profile in user.profile.followers.all %}
+                        <a href="{% url 'chat_detail' target_user.username %}" class="btn btn-outline-secondary">
+                            Message
+                        </a>
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
     </div>
 </div>
 
-<h5 class="mb-3">Tweets by @{{ target_user.username }}</h5>
+<!-- Tweets Section -->
+<h5 class="section-heading">Tweets by @{{ target_user.username }}</h5>
+
 {% for tweet in target_user.tweets.all %}
-    <div class="card mb-3 shadow-sm">
+    <div class="tweet-card card">
         <div class="card-body">
-            <p class="mb-1">{{ tweet.content }}</p>
-            <small class="text-muted">{{ tweet.created_at|date:"M d, H:i" }}</small>
+            <p class="mb-2">{{ tweet.content }}</p>
+            <div class="tweet-header">
+                <i class="bi bi-clock"></i> {{ tweet.created_at|date:"M d, H:i" }}
+            </div>
         </div>
     </div>
 {% empty %}
-    <p class="text-muted">No tweets yet.</p>
+    <p class="no-tweets">No tweets yet.</p>
 {% endfor %}
-
 {% endblock %}
+
 
 

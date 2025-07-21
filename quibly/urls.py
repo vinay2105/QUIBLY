@@ -25,6 +25,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('quibly_core.urls')),
+    path('chat/', include('chat.urls')),
+
 ]
 
 from django.conf import settings
