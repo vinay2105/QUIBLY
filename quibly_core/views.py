@@ -322,6 +322,18 @@ def comment_tweet_view(request, tweet_id):
 
     return redirect('view_tweet', tweet_id=tweet_id)
 
+@login_required
+def delete_tweet_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    if tweet.user != request.user:
+        messages.error(request, "You are not authorized to delete this tweet.")
+        return redirect('home')
+
+    tweet.delete()
+    messages.success(request, "Tweet deleted successfully.")
+    return redirect('profile')
+
 
 
 

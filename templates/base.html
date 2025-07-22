@@ -5,8 +5,16 @@
     <title>{% block title %}Quibly{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+    </style>
 </head>
-<body>
+<body style="background-color: #2a2a2e; color: #eaeaea;">
+
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="/">Quibly</a>
@@ -17,14 +25,11 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
                     {% if user.is_authenticated %}
-                        <!-- Home -->
                         <li class="nav-item me-2">
                             <a class="nav-link" href="/" title="Home">
                                 <i class="bi bi-house-door-fill fs-5"></i>
                             </a>
                         </li>
-
-                        <!-- Notifications -->
                         <li class="nav-item me-2 position-relative">
                             <a class="nav-link" href="/notifications" title="Notifications">
                                 <i class="bi bi-bell-fill fs-5"></i>
@@ -35,22 +40,16 @@
                                 {% endif %}
                             </a>
                         </li>
-
-                        <!-- Profile -->
                         <li class="nav-item me-2">
                             <a class="nav-link" href="/profile" title="My Profile">
                                 <i class="bi bi-person-circle fs-5"></i>
                             </a>
                         </li>
-
-                        <!-- Post Tweet -->
                         <li class="nav-item me-3">
                             <a class="nav-link" href="/tweet" title="Post Tweet">
                                 <i class="bi bi-pencil-square fs-5"></i>
                             </a>
                         </li>
-
-                        <!-- Logout -->
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="/logout">Logout</a>
                         </li>
@@ -67,18 +66,38 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} mt-2">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+    <!-- Flash Messages -->
+    {% if messages %}
+    <div class="container mt-3" id="flash-message-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
+    <!-- Page Content -->
+    <div class="container mt-3">
         {% block content %}{% endblock %}
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Auto-dismiss flash messages -->
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(el => {
+                el.classList.remove('show');
+                el.classList.add('fade-out');
+                setTimeout(() => el.remove(), 300);
+            });
+        }, 2000);
+    </script>
 </body>
 </html>
+
 
 

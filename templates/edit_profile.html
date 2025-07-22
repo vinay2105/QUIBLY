@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit Profile - Quibly{% endblock %}
 
 {% block content %}
 <style>
@@ -8,46 +8,100 @@
     }
 
     .edit-container {
-        max-width: 600px;
-        margin: 2rem auto;
-        background-color: #2b2b2f;
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        max-width: 650px;
+        margin: 2.5rem auto;
+        background-color: #1f1f23;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
         color: #e6e6e6;
     }
 
     .edit-container h2 {
-        color: #ffffff;
-        margin-bottom: 1.5rem;
         text-align: center;
+        color: #ffffff;
+        margin-bottom: 2rem;
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 1.4rem;
     }
 
     label {
-        color: #cccccc;
         font-weight: 500;
+        color: #cccccc;
+        margin-bottom: 0.4rem;
+        display: block;
     }
 
     .form-control {
-        background-color: #1f1f23;
-        border: 1px solid #555;
-        color: #ffffff;
-        border-radius: 6px;
-        padding: 0.5rem 0.75rem;
+        background-color: #2b2b2f !important;
+        border: 1px solid #444;
+        color: #ffffff !important;
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
     }
 
     .form-control::placeholder {
         color: #aaaaaa;
     }
 
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .profile-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-preview img {
+        width: 130px;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #555;
+        margin-bottom: 0.8rem;
+    }
+
+    input[type="file"] {
+        color: transparent;
+    }
+
+    input[type="file"]::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    input[type="file"]::before {
+        content: 'Change Photo';
+        display: inline-block;
+        background: #343a40;
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    input[type="file"]:hover::before {
+        background: #2c2c2f;
+    }
+
     .btn-save {
         background-color: #343a40;
         color: white;
         font-weight: 600;
-        padding: 0.5rem 1.25rem;
+        padding: 0.6rem 1.5rem;
         border: none;
         border-radius: 8px;
         transition: background-color 0.2s;
+        display: block;
+        margin: 1rem auto 0;
     }
 
     .btn-save:hover {
@@ -59,9 +113,61 @@
     <h2>Edit Your Profile</h2>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-save mt-3">Save Changes</button>
+
+        <!-- Profile Picture Section -->
+        <div class="text-center mb-4">
+    <img id="profilePicPreview" src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #ccc;">
+
+    <div class="mt-2">
+        <input type="file" name="profile_pic" id="id_profile_pic">
+    </div>
+</div>
+
+        <!-- Input Fields -->
+        <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone</label>
+            {{ form.phone }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.gender.id_for_label }}">Gender</label>
+            {{ form.gender }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.dob.id_for_label }}">Date of Birth</label>
+            {{ form.dob }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.bio.id_for_label }}">Bio</label>
+            {{ form.bio }}
+        </div>
+
+        <button type="submit" class="btn btn-save">Save Changes</button>
     </form>
 </div>
+
+<script>
+    // Profile image preview logic
+    const profilePicInput = document.getElementById("id_profile_pic");
+    const profilePicPreview = document.getElementById("profilePicPreview");
+
+    if (profilePicInput) {
+        profilePicInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profilePicPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
 {% endblock %}
+
+
+
 

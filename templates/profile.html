@@ -129,18 +129,24 @@
                     <p class="tweet-meta">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
 
                     <!-- Like & Comment -->
-                    <div class="mt-2 d-flex justify-content-between align-items-center">
-                        <div>
-                            <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                                    ❤️ {{ tweet.total_likes }}
-                                </button>
-                            </form>
-                            <a href="{% url 'view_tweet' tweet.id %}#comment-form" class="btn btn-sm-custom btn-outline-info ms-2">Comment</a>
-                        </div>
-                        <a href="{% url 'view_tweet' tweet.id %}" class="btn btn-sm-custom btn-outline-secondary">View</a>
-                    </div>
+                    <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                ❤️ {{ tweet.total_likes }}
+            </button>
+        </form>
+        <a href="{% url 'view_tweet' tweet.id %}#comment-form" class="btn btn-sm-custom btn-outline-info">Comment</a>
+        <a href="{% url 'view_tweet' tweet.id %}" class="btn btn-sm-custom btn-outline-secondary">View</a>
+    </div>
+
+    <!-- Delete Button -->
+    <form method="POST" action="{% url 'delete_tweet' tweet.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this tweet?');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm-custom btn-outline-danger">Delete</button>
+    </form>
+</div>
                 </div>
             </div>
         {% empty %}

@@ -4,18 +4,19 @@
 {% block content %}
 <style>
     .auth-container {
-    max-width: 420px;
-    margin: 3rem auto;
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);  /* This line gives it the shadow */
-    padding: 2rem;
-}
+        max-width: 420px;
+        margin: 3rem auto;
+        background-color: #1f1f23;  /* Darker background for consistency with Quibly theme */
+        border-radius: 16px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
+        padding: 2rem;
+        color: #eaeaea;
+    }
 
     .quibly-logo {
         font-size: 2rem;
         font-weight: bold;
-        color: #343a40;
+        color: #ffffff;
         text-align: center;
         margin-bottom: 1rem;
         letter-spacing: 1px;
@@ -26,15 +27,23 @@
         font-weight: 600;
         margin-bottom: 1.5rem;
         font-size: 1.25rem;
-        color: #333;
+        color: #f1f1f1;
     }
 
     .form-label {
         font-weight: 500;
+        color: #cccccc;
     }
 
     .form-control {
         border-radius: 8px;
+        background-color: #2a2a2e;
+        border: 1px solid #555;
+        color: #ffffff;
+    }
+
+    .form-control::placeholder {
+        color: #aaa;
     }
 
     .btn-auth {
@@ -43,6 +52,7 @@
         font-weight: 500;
         background-color: #343a40;
         border-color: #343a40;
+        color: #ffffff;
     }
 
     .btn-auth:hover {
@@ -57,17 +67,22 @@
 
     .form-footer a {
         text-decoration: none;
-        color: #343a40;
+        color: #bbbbbb;
     }
 
     .form-footer a:hover {
         text-decoration: underline;
+        color: #ffffff;
     }
 
     .alert {
         font-size: 0.9rem;
+        background-color: #343a40;
+        color: #ffffff;
+        border: 1px solid #444;
     }
 </style>
+
 
 <div class="auth-container">
     <div class="quibly-logo">Quibly</div>
