@@ -111,7 +111,7 @@ def profile_view(request):
 @login_required
 def post_tweet_view(request):
     if request.method == 'POST':
-        form = TweetForm(request.POST)
+        form = TweetForm(request.POST, request.FILES)  # ✅ include FILES
         if form.is_valid():
             tweet = form.save(commit=False)
             tweet.user = request.user

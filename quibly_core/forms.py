@@ -25,7 +25,12 @@ class RegisterForm(UserCreationForm):
 class TweetForm(forms.ModelForm):
     class Meta:
         model = Tweet
-        fields = ['content']
+        fields = ['content', 'caption', 'image']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'What’s happening?'}),
+            'caption': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Add a caption (optional)'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 from .models import UserProfile
 

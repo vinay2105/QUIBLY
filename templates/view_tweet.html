@@ -1,42 +1,208 @@
 {% extends 'base.html' %}
 {% block title %}Tweet by @{{ tweet.user.username }}{% endblock %}
-{% block content %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body d-flex">
-        <img src="{{ tweet.user.profile.profile_pic.url }}" class="rounded-circle me-3" width="60" height="60" alt="Profile">
+{% block content %}
+<style>
+    body {
+        background-color: #2a2a2e;
+    }
+
+    .tweet-container {
+        max-width: 700px;
+        margin: 1rem auto 1.5rem auto;
+        background-color: #2b2b2f;
+        color: #e6e6e6;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+
+    .tweet-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+    .tweet-header img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-right: 15px;
+        border: 2px solid #444;
+    }
+
+    .tweet-caption {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .tweet-image {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 12px;
+        margin: 1rem 0;
+        border: 1px solid #444;
+    }
+
+    .tweet-meta {
+        font-size: 0.85rem;
+        color: #bbbbbb;
+    }
+
+    .btn-sm-custom {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #ffffff;
+        border: 1px solid #555;
+        background-color: transparent;
+        padding: 6px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .back-btn:hover {
+        background-color: #3b3b3f;
+        text-decoration: none;
+        color: #fff;
+    }
+
+    /* Comment Section */
+    .comment-section-wrapper {
+        margin-top: 2rem;
+        background-color: #1f1f23;
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+    .comment {
+        border-left: 3px solid #444;
+        padding-left: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .comment small {
+        color: #cccccc;
+    }
+
+    textarea, input {
+        background-color: #1f1f23 !important;
+        border: 1px solid #555 !important;
+        color: #ffffff !important;
+    }
+
+    textarea::placeholder, input::placeholder {
+        color: #aaaaaa !important;
+    }
+
+    h5 {
+        color: #ffffff;
+        margin-top: 2.5rem;
+    }
+
+    .no-comments {
+        color: #cccccc;
+    }
+    .back-btn-floating {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #2e2e32;
+    color: #ffffff;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    border: 1px solid #555;
+    z-index: 999;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    transition: 0.2s ease-in-out;
+}
+
+.back-btn-floating:hover {
+    background-color: #3c3c40;
+    color: #ffffff;
+    text-decoration: none;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+}
+</style>
+
+<a href="{% url 'home' %}" class="back-btn-floating">
+    <i class="bi bi-arrow-left"></i> Feed
+</a>
+
+<!-- Main Tweet Card -->
+<div style="margin-top: 0.5rem;" class="tweet-container">
+
+    <!-- Tweet Header -->
+    <div class="tweet-header">
+        <img src="{{ tweet.user.profile.profile_pic.url }}" alt="Profile">
         <div>
             <h5 class="mb-1">@{{ tweet.user.username }}</h5>
-            <p>{{ tweet.content }}</p>
-            <p class="text-muted small">{{ tweet.created_at|date:"M d, H:i" }}</p>
-
-            <!-- Like button -->
-            <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                    ❤️ {{ tweet.total_likes }}
-                </button>
-            </form>
+            <p class="tweet-meta">{{ tweet.created_at|date:"M d, H:i" }}</p>
         </div>
     </div>
+
+    <!-- Tweet Caption -->
+    {% if tweet.caption %}
+        <p class="tweet-caption">{{ tweet.caption }}</p>
+    {% endif %}
+
+    <!-- Tweet Image -->
+    {% if tweet.image %}
+        <img src="{{ tweet.image.url }}" class="tweet-image" alt="Tweet Image">
+    {% endif %}
+
+    <!-- Tweet Content -->
+    {% if tweet.content %}
+        <p>{{ tweet.content }}</p>
+    {% endif %}
+
+    <!-- Like Button -->
+    <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+            ❤️ {{ tweet.total_likes }}
+        </button>
+    </form>
 </div>
-<a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary mb-3">← Back to Feed</a>
-<h5>Comments</h5>
 
-<form method="POST" class="mb-3" id="comment-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
-</form>
+<!-- Comment Form -->
+<div class="tweet-container mt-4">
+    <h5>Leave a Comment</h5>
 
+    <form method="POST" id="comment-form" class="mb-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-sm btn-primary">Post Comment</button>
+    </form>
+</div>
 
-{% for comment in comments %}
-    <div class="border-start ps-3 mb-2">
-        <strong>@{{ comment.user.username }}</strong>: {{ comment.content }}<br>
-        <small class="text-muted">{{ comment.created_at|date:"M d, H:i" }}</small>
-    </div>
-{% empty %}
-    <p class="text-muted">No comments yet. Be the first to reply.</p>
-{% endfor %}
+<!-- Comment Section -->
+<div class="tweet-container comment-section-wrapper">
+    <h5 class="mb-3">Comments</h5>
 
+    {% for comment in comments %}
+        <div class="comment">
+            <strong>@{{ comment.user.username }}</strong>: {{ comment.content }}<br>
+            <small>{{ comment.created_at|date:"M d, H:i" }}</small>
+        </div>
+    {% empty %}
+        <p class="no-comments">No comments yet. Be the first to reply.</p>
+    {% endfor %}
+</div>
 {% endblock %}
+
+

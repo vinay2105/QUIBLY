@@ -1,14 +1,61 @@
 {% extends 'base.html' %}
 {% block title %}Notifications{% endblock %}
-{% block content %}
-<h3>Notifications</h3>
 
-{% for notification in notifications %}
-    <div class="alert alert-secondary">
-        {{ notification.message }} <br>
-        <small class="text-muted">{{ notification.timestamp|date:"M d, H:i" }}</small>
-    </div>
-{% empty %}
-    <p class="text-muted">No notifications yet.</p>
-{% endfor %}
+{% block content %}
+<style>
+    body {
+        background-color: #2a2a2e;
+    }
+
+    .notif-container {
+        max-width: 700px;
+        margin: 1.5rem auto;
+    }
+
+    .notif-title {
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .notif-card {
+        background-color: #2b2b2f;
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        color: #e6e6e6;
+        margin-bottom: 1.2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .notif-card:hover {
+        box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+    }
+
+    .notif-timestamp {
+        font-size: 0.85rem;
+        color: #b5b5b5;
+    }
+
+    .no-notif {
+        color: #ccc;
+        text-align: center;
+        margin-top: 3rem;
+    }
+</style>
+
+<div class="notif-container">
+    <h3 class="notif-title">Notifications</h3>
+
+    {% for notification in notifications %}
+        <div class="notif-card">
+            {{ notification.message|safe }}<br>
+            <small class="notif-timestamp">{{ notification.timestamp|date:"M d, H:i" }}</small>
+        </div>
+    {% empty %}
+        <p class="no-notif">You have no notifications yet.</p>
+    {% endfor %}
+</div>
 {% endblock %}
+

@@ -1,43 +1,156 @@
 {% extends 'base.html' %}
 {% block title %}Profile - Quibly{% endblock %}
-{% block content %}
 
-<div class="row mb-4">
-    <div class="col-md-4 text-center">
-        <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle shadow" width="150" height="150" alt="Profile Picture">
-        <h4 class="mt-3">@{{ user.username }}</h4>
-        <p class="text-muted">{{ user.email }}</p>
-        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary mt-2">Edit Profile</a>
+{% block content %}
+<style>
+    body {
+        background-color: #2a2a2e;
+    }
+
+    .profile-container {
+        max-width: 1100px;
+        margin: auto;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .profile-sidebar {
+        flex: 1 1 300px;
+        background-color: #1f1f23;
+        color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+        padding: 2rem 1.5rem;
+        position: sticky;
+        top: 90px;
+        height: fit-content;
+    }
+
+    .profile-sidebar img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #ccc;
+        margin-bottom: 1rem;
+    }
+
+    .tweet-section {
+        flex: 2 1 600px;
+        background-color: #1f1f23;
+        color: #e6e6e6;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    .tweet-card {
+        background-color: #2b2b2f;
+        color: #f1f1f1;
+        border: 1px solid #444;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: 0.2s ease-in-out;
+    }
+
+    .tweet-card:hover {
+        box-shadow: 0 4px 18px rgba(255, 255, 255, 0.05);
+    }
+
+    .tweet-caption {
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .tweet-image {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+    }
+
+    .tweet-meta {
+        font-size: 0.85rem;
+        color: #aaa;
+    }
+
+    .btn-sm-custom {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+
+    .btn-dark-grey {
+        background-color: #3b3b3f;
+        color: #fff;
+    }
+
+    .btn-dark-grey:hover {
+        background-color: #2a2a2d;
+    }
+
+    hr {
+        border-top: 1px solid #555;
+    }
+</style>
+
+<div class="profile-container">
+
+    <!-- Profile Info -->
+    <div class="profile-sidebar text-center">
+        <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture">
+        <h4>@{{ user.username }}</h4>
+        <p style="color: #ffffff;">{{ user.email }}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-dark-grey btn-sm w-100 mt-2">Edit Profile</a>
+        <hr>
+        <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
+        <p><strong>Gender:</strong> {{ user.profile.get_gender_display|default:"Not specified" }}</p>
+        <p><strong>DOB:</strong> {{ user.profile.dob|date:"F d, Y"|default:"Not provided" }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
     </div>
 
-    <div class="col-md-8">
-        <div class="card shadow-sm mb-3">
-            <div class="card-body">
-                <h5 class="card-title">About Me</h5>
-                <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
-                <p><strong>Gender:</strong> {{ user.profile.get_gender_display|default:"Not specified" }}</p>
-                <p><strong>Date of Birth:</strong> {{ user.profile.dob|date:"F d, Y"|default:"Not provided" }}</p>
-                <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+    <!-- Tweets -->
+    <div class="tweet-section">
+        <h4 class="mb-4">My Tweets</h4>
+        {% for tweet in user.tweets.all|dictsortreversed:"created_at" %}
+            <div class="card tweet-card">
+                <div class="card-body">
+                    {% if tweet.caption %}
+                        <p class="tweet-caption">{{ tweet.caption }}</p>
+                    {% endif %}
+                    {% if tweet.image %}
+                        <img src="{{ tweet.image.url }}" class="tweet-image" alt="Tweet Image">
+                    {% endif %}
+                    {% if tweet.content %}
+                        <p>{{ tweet.content }}</p>
+                    {% endif %}
+                    <p class="tweet-meta">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
+
+                    <!-- Like & Comment -->
+                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                    ❤️ {{ tweet.total_likes }}
+                                </button>
+                            </form>
+                            <a href="{% url 'view_tweet' tweet.id %}#comment-form" class="btn btn-sm-custom btn-outline-info ms-2">Comment</a>
+                        </div>
+                        <a href="{% url 'view_tweet' tweet.id %}" class="btn btn-sm-custom btn-outline-secondary">View</a>
+                    </div>
+                </div>
             </div>
-        </div>
+        {% empty %}
+            <p class="text-muted">You haven't posted any tweets yet.</p>
+        {% endfor %}
     </div>
 </div>
-
-<hr>
-
-<h4>My Tweets</h4>
-{% if user.tweets.all %}
-    {% for tweet in user.tweets.all %}
-        <div class="card mb-3 shadow-sm">
-            <div class="card-body">
-                <p class="card-text">{{ tweet.content }}</p>
-                <p class="text-muted small mb-0">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
-            </div>
-        </div>
-    {% endfor %}
-{% else %}
-    <p class="text-muted">You haven't posted any tweets yet.</p>
-{% endif %}
-
 {% endblock %}
+
+
+
+
 

@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 
 class Tweet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweets')
-    content = models.TextField(max_length=280)
+    content = models.TextField(max_length=280, blank=True)
+    caption = models.CharField(max_length=200, blank=True)  # ✅ new
+    image = models.ImageField(upload_to='tweet_images/', blank=True, null=True)  # ✅ new
     created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(User, related_name='liked_tweets', blank=True)  # ✅ like feature
+    likes = models.ManyToManyField(User, related_name='liked_tweets', blank=True)
 
     def total_likes(self):
         return self.likes.count()

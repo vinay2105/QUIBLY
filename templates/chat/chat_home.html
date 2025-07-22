@@ -3,31 +3,36 @@
 
 {% block content %}
 <style>
+    body {
+        background-color: #2a2a2e;
+    }
+
     .conversation-container {
-        max-width: 600px;
-        margin: auto;
-        padding-top: 2rem;
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+
+    .conversation-title {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2rem;
     }
 
     .conversation-card {
-        background-color: #fff;
-        border: 1px solid #dee2e6;
+        background-color: #2b2b2f;
+        border: 1px solid #444;
         border-radius: 12px;
-        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-        transition: box-shadow 0.2s;
-    }
-
-    .conversation-card:hover {
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
     }
 
     .conversation-item {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
-        border-bottom: 1px solid #f1f1f1;
+        padding: 14px 18px;
+        border-bottom: 1px solid #444;
+        color: #e6e6e6;
         text-decoration: none;
-        color: inherit;
+        transition: background-color 0.2s ease-in-out;
     }
 
     .conversation-item:last-child {
@@ -35,7 +40,7 @@
     }
 
     .conversation-item:hover {
-        background-color: #f8f9fa;
+        background-color: #3a3a3f;
     }
 
     .conversation-item img {
@@ -47,19 +52,19 @@
     }
 
     .conversation-name {
-        font-weight: 500;
         font-size: 1rem;
+        font-weight: 500;
     }
 
     .no-chat {
         padding: 2rem;
         text-align: center;
-        color: #888;
+        color: #b0b0b0;
     }
 </style>
 
 <div class="conversation-container">
-    <h4 class="mb-4 text-center">Your Conversations</h4>
+    <h4 class="conversation-title">Your Conversations</h4>
 
     {% if threads %}
         <div class="conversation-card">
@@ -79,4 +84,5 @@
     {% endif %}
 </div>
 {% endblock %}
+
 
