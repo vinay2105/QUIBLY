@@ -335,6 +335,19 @@ def delete_tweet_view(request, tweet_id):
     return redirect('profile')
 
 
+from django.db.models import Q
+
+def search_users_view(request):
+    query = request.GET.get('q', '')
+    users = User.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query) |
+        Q(profile__bio__icontains=query)
+    ) if query else []
+
+    return render(request, 'search_results.html', {'query': query, 'users': users})
+
+
 
 
 

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #2a2a2e;
+    }
+
+    .search-results-container {
+        max-width: 700px;
+        margin: auto;
+        background-color: #1f1f23;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+        color: #e6e6e6;
+    }
+
+    .result-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #2b2b2f;
+        border-radius: 12px;
+        transition: background 0.2s;
+    }
+
+    .result-item:hover {
+        background-color: #343a40;
+    }
+
+    .result-item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+
+    .result-info h5 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .result-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+
+    .search-heading {
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="search-results-container">
+    <h4 class="search-heading">Search Results for: "{{ query }}"</h4>
+
+    {% if users %}
+        {% for user in users %}
+            <a href="{% url 'public_profile' user.username %}" class="result-item text-decoration-none text-white">
+                <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
+                <div class="result-info">
+                    <h5>@{{ user.username }}</h5>
+                    <p>{{ user.profile.bio|default:"No bio provided." }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">No users found for your query.</p>
+    {% endif %}
+</div>
+{% endblock %}

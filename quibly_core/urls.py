@@ -20,6 +20,7 @@ path('user/<str:username>/follow-toggle/', views.follow_toggle_view, name='follo
 path('user/<str:username>/', views.public_profile_view, name='public_profile'),
 path('notifications/', views.notifications_view, name='notifications'),
 path('tweet/<int:tweet_id>/delete/', views.delete_tweet_view, name='delete_tweet'),
+path('search/', views.search_users_view, name='search_users'),
 
 
 
