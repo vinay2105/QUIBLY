@@ -1,0 +1,10 @@
+Django
+python-decouple
+dj-database-url
+psycopg2-binary
+gunicorn
+whitenoise
+Pillow
+cloudinary
+django-cloudinary-storage
+python-dotenv
