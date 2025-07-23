@@ -1,131 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{% block title %}Quibly{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .fade-out {
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-        }
+        .fade-out { opacity: 0; transition: opacity 0.3s ease-out; }
     </style>
 </head>
-<body style="background-color: #2a2a2e; color: #eaeaea;">
+<body style="background-color:#2a2a2e;color:#eaeaea;">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">Quibly</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">Quibly</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <!-- Search Bar -->
-<form class="d-flex align-items-center me-3 position-relative" method="get" action="{% url 'search_users' %}" style="min-width: 200px;">
-    <input 
-        id="searchInput"
-        class="form-control form-control-sm bg-dark text-white border-0 ps-3 pe-4 rounded-pill" 
-        type="search" 
-        name="q" 
-        placeholder="Search users..." 
-        aria-label="Search"
-        style="box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1); height: 36px;"
-    >
-    <i id="searchIcon" class="bi bi-search position-absolute text-white" 
-       style="right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
-</form>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <!-- Search -->
+      <form class="d-flex align-items-center me-3 position-relative"
+            method="get"
+            action="{% url 'search_users' %}"
+            style="min-width:200px;">
+        <input id="searchInput"
+               class="form-control form-control-sm bg-dark text-white border-0 ps-3 pe-4 rounded-pill"
+               type="search" name="q" placeholder="Search users..." aria-label="Search"
+               style="box-shadow: inset 0 0 8px rgba(255,255,255,0.1); height:36px;">
+        <i id="searchIcon" class="bi bi-search position-absolute text-white"
+           style="right:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
+      </form>
 
-
-                <ul class="navbar-nav align-items-center">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item me-2">
-                            <a class="nav-link" href="/" title="Home">
-                                <i class="bi bi-house-door-fill fs-5"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item me-2 position-relative">
-                            <a class="nav-link" href="/notifications" title="Notifications">
-                                <i class="bi bi-bell-fill fs-5"></i>
-                                {% if unread_count > 0 %}
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ unread_count }}
-                                    </span>
-                                {% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item me-2">
-                            <a class="nav-link" href="/profile" title="My Profile">
-                                <i class="bi bi-person-circle fs-5"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link" href="/tweet" title="Post Tweet">
-                                <i class="bi bi-pencil-square fs-5"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="/logout">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item me-2">
-                            <a class="nav-link" href="/login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/register">Register</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Flash Messages -->
-    {% if messages %}
-    <div class="container mt-3" id="flash-message-container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+      <ul class="navbar-nav align-items-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item me-2">
+            <a class="nav-link" href="{% url 'home' %}" title="Home">
+              <i class="bi bi-house-door-fill fs-5"></i>
+            </a>
+          </li>
+          <li class="nav-item me-2 position-relative">
+            <a class="nav-link" href="{% url 'notifications' %}" title="Notifications">
+              <i class="bi bi-bell-fill fs-5"></i>
+              {% if unread_count|default:0 > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{ unread_count|default:0 }}
+                </span>
+              {% endif %}
+            </a>
+          </li>
+          <li class="nav-item me-2">
+            <a class="nav-link" href="{% url 'profile' %}" title="My Profile">
+              <i class="bi bi-person-circle fs-5"></i>
+            </a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'post_tweet' %}" title="Post Tweet">
+              <i class="bi bi-pencil-square fs-5"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item me-2">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+          </li>
+        {% endif %}
+      </ul>
     </div>
-    {% endif %}
+  </div>
+</nav>
 
-    <!-- Page Content -->
-    <div class="container mt-3">
-        {% block content %}{% endblock %}
-    </div>
+{% if messages %}
+  <div class="container mt-3" id="flash-message-container">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="container mt-3">
+  {% block content %}{% endblock %}
+</div>
 
-    <!-- Auto-dismiss flash messages -->
-    <script>
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(el => {
-                el.classList.remove('show');
-                el.classList.add('fade-out');
-                setTimeout(() => el.remove(), 300);
-            });
-        }, 2000);
-        const searchInput = document.getElementById("searchInput");
-    const searchIcon = document.getElementById("searchIcon");
-
-    searchInput.addEventListener("focus", () => {
-        searchIcon.style.display = "none";
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.classList.remove('show');
+      el.classList.add('fade-out');
+      setTimeout(() => el.remove(), 300);
     });
+  }, 2000);
 
-    searchInput.addEventListener("blur", () => {
-        if (!searchInput.value.trim()) {
-            searchIcon.style.display = "block";
-        }
-    });
-    </script>
+  const searchInput = document.getElementById("searchInput");
+  const searchIcon = document.getElementById("searchIcon");
+  searchInput.addEventListener("focus", () => { searchIcon.style.display = "none"; });
+  searchInput.addEventListener("blur", () => {
+    if (!searchInput.value.trim()) searchIcon.style.display = "block";
+  });
+</script>
 </body>
 </html>
+
 
 
 
