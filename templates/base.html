@@ -20,6 +20,7 @@
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <!-- Search -->
+       {% if user.is_authenticated %}
       <form class="d-flex align-items-center me-3 position-relative"
             method="get"
             action="{% url 'search_users' %}"
@@ -31,6 +32,7 @@
         <i id="searchIcon" class="bi bi-search position-absolute text-white"
            style="right:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
       </form>
+      {% endif %}
 
       <ul class="navbar-nav align-items-center">
         {% if user.is_authenticated %}
