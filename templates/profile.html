@@ -1,160 +1,239 @@
 {% extends 'base.html' %}
-{% block title %}Profile - Quibly{% endblock %}
+{% block title %}@{{ user.username }}’s Profile{% endblock %}
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-    }
+  body {
+    background-color: #2a2a2e;
+  }
+  .profile-page {
+    max-width: 1100px;
+    margin: 2rem auto;
+    display: flex;
+    gap: 30px;
+  }
+  /* Sidebar */
+  .profile-info {
+    flex: 0 0 300px;
+    background-color: #1f1f23;
+    color: #e6e6e6;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.08);
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 90px;
+    text-align: center;
+  }
+  .profile-info img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ccc;
+    margin-bottom: 1rem;
+  }
+  .profile-info h4 {
+    margin-bottom: .5rem;
+  }
+  .profile-info p {
+    margin-bottom: .75rem;
+  }
+  .profile-info .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+  }
+  .profile-info .stats a {
+    color: #e6e6e6;
+    text-decoration: none;
+    font-size: .9rem;
+  }
+  .profile-info .stats a strong {
+    display: block;
+    font-size: 1.2rem;
+    color: #fff;
+  }
 
-    .profile-container {
-        max-width: 1100px;
-        margin: auto;
-        display: flex;
-        gap: 30px;
-        flex-wrap: wrap;
-    }
+  /* Edited button style */
+  .btn-edit-profile {
+    display: inline-block;
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #4dabf7;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s;
+    margin-bottom: 1rem;
+  }
+  .btn-edit-profile:hover {
+    background-color: #339af0;
+    text-decoration: none;
+    color: #fff !important;
+  }
 
-    .profile-sidebar {
-        flex: 1 1 300px;
-        background-color: #1f1f23;
-        color: #fff;
-        border-radius: 16px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
-        padding: 2rem 1.5rem;
-        position: sticky;
-        top: 90px;
-        height: fit-content;
-    }
+  hr {
+    border-top: 1px solid #555;
+    margin: 1.5rem 0;
+  }
 
-    .profile-sidebar img {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #ccc;
-        margin-bottom: 1rem;
-    }
-
-    .tweet-section {
-        flex: 2 1 600px;
-        background-color: #1f1f23;
-        color: #e6e6e6;
-        border-radius: 16px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        max-height: 75vh;
-        overflow-y: auto;
-    }
-
-    .tweet-card {
-        background-color: #2b2b2f;
-        color: #f1f1f1;
-        border: 1px solid #444;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: 0.2s ease-in-out;
-    }
-
-    .tweet-card:hover {
-        box-shadow: 0 4px 18px rgba(255, 255, 255, 0.05);
-    }
-
-    .tweet-caption {
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-
-    .tweet-image {
-        max-width: 100%;
-        border-radius: 10px;
-        margin-bottom: 0.75rem;
-    }
-
-    .tweet-meta {
-        font-size: 0.85rem;
-        color: #aaa;
-    }
-
-    .btn-sm-custom {
-        font-size: 0.75rem;
-        padding: 4px 10px;
-    }
-
-    .btn-dark-grey {
-        background-color: #3b3b3f;
-        color: #fff;
-    }
-
-    .btn-dark-grey:hover {
-        background-color: #2a2a2d;
-    }
-
-    hr {
-        border-top: 1px solid #555;
-    }
+  /* Tweets */
+  .tweet-list {
+    flex: 1;
+    background-color: #1f1f23;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+  .tweet-list h4 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+  }
+  .tweet-card {
+    background-color: #2b2b2f;
+    color: #f1f1f1;
+    border: 1px solid #444;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: box-shadow .2s ease-in-out;
+  }
+  .tweet-card:hover {
+    box-shadow: 0 4px 18px rgba(255,255,255,0.05);
+  }
+  .tweet-caption {
+    font-weight: 600;
+    color: #4dabf7;
+    margin-bottom: .5rem;
+  }
+  .tweet-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: .75rem;
+  }
+  .tweet-meta {
+    font-size: .85rem;
+    color: #aaa;
+  }
+  .btn-sm-custom {
+    font-size: .75rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
 </style>
 
-<div class="profile-container">
+<div class="container profile-page">
 
-    <!-- Profile Info -->
-    <div class="profile-sidebar text-center">
-        <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture">
-        <h4>@{{ user.username }}</h4>
-        <p style="color: #ffffff;">{{ user.email }}</p>
-        <a href="{% url 'edit_profile' %}" class="btn btn-dark-grey btn-sm w-100 mt-2">Edit Profile</a>
-        <hr>
-        <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
-        <p><strong>Gender:</strong> {{ user.profile.get_gender_display|default:"Not specified" }}</p>
-        <p><strong>DOB:</strong> {{ user.profile.dob|date:"F d, Y"|default:"Not provided" }}</p>
-        <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+  <!-- Left: Profile Info -->
+  <aside class="profile-info">
+    <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture">
+    <h4>@{{ user.username }}</h4>
+
+    <div class="stats">
+      <a href="{% url 'connections' user.username %}">
+        <strong>{{ user.tweets.count }}</strong>
+        Tweets
+      </a>
+      <a href="{% url 'connections' user.username %}">
+        <strong>{{ user.profile.followers.count }}</strong>
+        Followers
+      </a>
+      <a href="{% url 'connections' user.username %}">
+        <strong>{{ user.profile.following.count }}</strong>
+        Following
+      </a>
     </div>
 
-    <!-- Tweets -->
-    <div class="tweet-section">
-        <h4 class="mb-4">My Tweets</h4>
-        {% for tweet in user.tweets.all|dictsortreversed:"created_at" %}
-            <div class="card tweet-card">
-                <div class="card-body">
-                    {% if tweet.caption %}
-                        <p class="tweet-caption">{{ tweet.caption }}</p>
-                    {% endif %}
-                    {% if tweet.image %}
-                        <img src="{{ tweet.image.url }}" class="tweet-image" alt="Tweet Image">
-                    {% endif %}
-                    {% if tweet.content %}
-                        <p>{{ tweet.content }}</p>
-                    {% endif %}
-                    <p class="tweet-meta">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
+    <!-- New styled Edit Profile button -->
+    <a href="{% url 'edit_profile' %}" class="btn-edit-profile">
+      Edit Profile
+    </a>
 
-                    <!-- Like & Comment -->
-                    <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
-    <div class="d-flex align-items-center flex-wrap gap-2">
-        <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                ❤️ {{ tweet.total_likes }}
-            </button>
-        </form>
-        <a href="{% url 'view_tweet' tweet.id %}#comment-form" class="btn btn-sm-custom btn-outline-info">Comment</a>
-        <a href="{% url 'view_tweet' tweet.id %}" class="btn btn-sm-custom btn-outline-secondary">View</a>
-    </div>
+    <hr>
 
-    <!-- Delete Button -->
-    <form method="POST" action="{% url 'delete_tweet' tweet.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this tweet?');">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-sm-custom btn-outline-danger">Delete</button>
-    </form>
-</div>
-                </div>
+    <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
+    <p><strong>Gender:</strong> {{ user.profile.get_gender_display|default:"Not specified" }}</p>
+    <p><strong>DOB:</strong> {{ user.profile.dob|date:"F d, Y"|default:"Not provided" }}</p>
+    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+  </aside>
+
+  <!-- Right: Tweets -->
+  <section class="tweet-list">
+    <h4>My Tweets</h4>
+    {% for tweet in user.tweets.all|dictsortreversed:"created_at" %}
+      <div class="card tweet-card">
+        <div class="card-body">
+          {% if tweet.caption %}
+            <p class="tweet-caption">{{ tweet.caption }}</p>
+          {% endif %}
+          {% if tweet.image %}
+            <img src="{{ tweet.image.url }}" class="tweet-image" alt="Tweet Image">
+          {% endif %}
+          {% if tweet.content %}
+            <p>{{ tweet.content }}</p>
+          {% endif %}
+          <p class="tweet-meta">Posted on {{ tweet.created_at|date:"M d, Y - H:i" }}</p>
+
+          <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
+            <div class="d-flex gap-2">
+              <div>
+                <button class="btn-like btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}"
+        data-tweet-id="{{ tweet.id }}">
+    ❤️ <span class="like-count">{{ tweet.total_likes }}</span>
+</button>
+              <a href="{% url 'view_tweet' tweet.id %}#comment-form"
+                 class="btn btn-sm-custom btn-outline-info">Comment</a>
+              <a href="{% url 'view_tweet' tweet.id %}"
+                 class="btn btn-sm-custom btn-outline-secondary">View</a>
             </div>
-        {% empty %}
-            <p class="text-muted">You haven't posted any tweets yet.</p>
-        {% endfor %}
-    </div>
+            <form method="POST" action="{% url 'delete_tweet' tweet.id %}"
+                  onsubmit="return confirm('Are you sure you want to delete this tweet?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm-custom btn-outline-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">You haven't posted any tweets yet.</p>
+    {% endfor %}
+  </section>
+
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const likeButtons = document.querySelectorAll(".btn-like");
+
+    likeButtons.forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const tweetId = this.dataset.tweetId;
+
+            fetch(`/like/${tweetId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.querySelector(".like-count").textContent = data.total_likes;
+                this.classList.toggle("btn-danger", data.liked);
+                this.classList.toggle("btn-outline-danger", !data.liked);
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
+
+
+
 
 
 

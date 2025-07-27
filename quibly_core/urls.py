@@ -22,6 +22,8 @@ path('notifications/', views.notifications_view, name='notifications'),
 path('tweet/<int:tweet_id>/delete/', views.delete_tweet_view, name='delete_tweet'),
 path('search/', views.search_users_view, name='search_users'),
 
+    path('user/<str:username>/connections/', views.connections_view, name='connections'),
+
 
 
 

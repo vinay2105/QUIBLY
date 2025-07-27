@@ -363,6 +363,26 @@ def search_users_view(request):
 
 
 
+@login_required
+def connections_view(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    profile = profile_user.profile
+
+    following = profile.following.all()
+    followers = profile.followers.all()
+    user_profile = request.user.profile
+    target_profile = get_object_or_404(User, username=username).profile
+    mutual = target_profile.followers.filter(user__in=user_profile.following.values_list('user', flat=True)).exclude(user=request.user)
+
+
+    return render(request, 'connections.html', {
+        'profile_user': profile_user,
+        'following': following,
+        'followers': followers,
+        'mutual': mutual,
+    })
+
+
 
 
 
