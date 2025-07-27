@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['quibly-1.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['quibly-1.onrender.com', '127.0.0.1', 'localhost','192.168.1.1','*']
 CSRF_TRUSTED_ORIGINS = ['https://quibly-1.onrender.com']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

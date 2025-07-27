@@ -36,13 +36,16 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True)
-    profile_pic = models.ImageField(upload_to='profile_pics/', default='https://res.cloudinary.com/dykmgthqj/image/upload/vXXXXXXXX/default.jpg')
+    profile_pic = models.ImageField(
+        upload_to='profile_pics/',
+        default='https://res.cloudinary.com/dykmgthqj/image/upload/vXXXXXXXX/default.jpg'
+    )
 
     following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
-
     def __str__(self):
         return self.user.username
+
     
 
 from django.db import models

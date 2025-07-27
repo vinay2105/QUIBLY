@@ -53,6 +53,25 @@
         text-align: center;
         margin-bottom: 2rem;
     }
+    .chat-float-btn {
+    width: 58px;
+    height: 58px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    background-color: #343a40; /* matches your dark theme */
+    color: #eaeaea;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.chat-float-btn:hover {
+    background-color: #495057; /* slightly lighter on hover */
+    transform: scale(1.08);
+    color: #ffffff;
+}
 </style>
 
 <div class="home-container">
@@ -86,12 +105,11 @@
         <!-- Like / Comment / View -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                <form method="POST" action="{% url 'like_tweet' tweet.id %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                        ❤️ {{ tweet.total_likes }}
-                    </button>
-                </form>
+                <button class="btn-like btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}"
+        data-tweet-id="{{ tweet.id }}">
+    ❤️ <span class="like-count">{{ tweet.total_likes }}</span>
+</button>
+
                 <a href="{% url 'view_tweet' tweet.id %}#comment-form" class="btn btn-sm-custom btn-outline-info ms-2">Comment</a>
             </div>
             <a href="{% url 'view_tweet' tweet.id %}" class="btn btn-sm-custom btn-outline-secondary">View</a>
@@ -103,10 +121,39 @@
 </div>
 
 <!-- Floating Chat Button -->
-<a href="{% url 'chat_home' %}" class="btn btn-primary rounded-circle position-fixed" 
-   style="bottom: 20px; right: 20px; z-index: 999;">
-    <i class="bi bi-chat-dots-fill"></i>
+<a href="{% url 'chat_home' %}" class="chat-float-btn position-fixed d-flex align-items-center justify-content-center"
+   title="Chat">
+    <i class="bi bi-chat-dots-fill fs-4"></i>
 </a>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const likeButtons = document.querySelectorAll(".btn-like");
+
+    likeButtons.forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const tweetId = this.dataset.tweetId;
+
+            fetch(`/like/${tweetId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.querySelector(".like-count").textContent = data.total_likes;
+                this.classList.toggle("btn-danger", data.liked);
+                this.classList.toggle("btn-outline-danger", !data.liked);
+            });
+        });
+    });
+});
+</script>
+
 {% endblock %}
 
 

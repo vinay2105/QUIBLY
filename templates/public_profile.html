@@ -84,12 +84,11 @@
             </p>
             {% if user.is_authenticated and user != target_user %}
                 <div class="public-actions">
-                    <form method="post" action="{% url 'follow_toggle' target_user.username %}">
-                        {% csrf_token %}
-                        <button class="btn {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}">
-                            {% if is_following %}Unfollow{% else %}Follow{% endif %}
-                        </button>
-                    </form>
+<button class="btn-follow btn {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}"
+        data-username="{{ target_user.username }}">
+    {% if is_following %}Unfollow{% else %}Follow{% endif %}
+</button>
+
                     {% if user.profile in target_user.profile.followers.all and target_user.profile in user.profile.followers.all %}
                         <a href="{% url 'chat_detail' target_user.username %}" class="btn btn-outline-light">Message</a>
                     {% endif %}
@@ -131,6 +130,33 @@
     {% endfor %}
 
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const followBtn = document.querySelector(".btn-follow");
+
+    if (followBtn) {
+        followBtn.addEventListener("click", function () {
+            const username = this.dataset.username;
+
+            fetch(`/user/${username}/follow-toggle/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.textContent = data.following ? "Unfollow" : "Follow";
+                this.classList.toggle("btn-danger", data.following);
+                this.classList.toggle("btn-outline-primary", !data.following);
+            });
+        });
+    }
+});
+</script>
+
+
 {% endblock %}
 
 

@@ -98,12 +98,21 @@ def logout_view(request):
 # -------------
 # CORE PAGES
 # -------------
-@login_required
+@login_required(login_url='login')
 def home_view(request):
+    # Get the logged-in user's profile
+    profile = request.user.profile
+
+    # Get all followed profiles
+    followed_profiles = profile.following.all()
+
+    # Filter tweets where tweet.user.profile is in followed_profiles
     tweets = (Tweet.objects
+              .filter(user__profile__in=followed_profiles)
               .select_related('user', 'user__profile')
               .prefetch_related('comments__user', 'likes')
               .order_by('-created_at'))
+
     return render(request, 'home.html', {'tweets': tweets})
 
 
@@ -181,23 +190,30 @@ def delete_tweet_view(request, tweet_id):
     messages.success(request, "Tweet deleted successfully.")
     return redirect('profile')
 
-
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+@require_POST
 @login_required
 def like_tweet_view(request, tweet_id):
     tweet = get_object_or_404(Tweet, id=tweet_id)
     user = request.user
+    liked = False
 
     if user in tweet.likes.all():
         tweet.likes.remove(user)
     else:
         tweet.likes.add(user)
+        liked = True
         if tweet.user != user:
             Notification.objects.create(
                 recipient=tweet.user,
                 message=f"@{user.username} liked your tweet."
             )
 
-    return redirect(request.META.get('HTTP_REFERER', 'home'))
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': tweet.total_likes()
+    })
 
 
 @login_required
@@ -223,18 +239,22 @@ def follow_toggle_view(request, username):
     target_user = get_object_or_404(User, username=username)
     me = request.user.profile
     them = target_user.profile
+    following = False
 
     if me != them:
         if them in me.following.all():
             me.following.remove(them)
         else:
             me.following.add(them)
-            Notification.objects.create(
-                recipient=target_user,
-                message=f"@{request.user.username} followed you."
-            )
+            following = True
+            if request.user != target_user:
+                Notification.objects.create(
+                    recipient=target_user,
+                    message=f"@{request.user.username} followed you."
+                )
 
-    return redirect('public_profile', username=username)
+    return JsonResponse({'following': following})
+
 
 
 def public_profile_view(request, username):
