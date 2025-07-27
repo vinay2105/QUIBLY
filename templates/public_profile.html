@@ -3,123 +3,139 @@
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-        color: #f0f0f0;
-    }
+  body {
+    background-color: #2a2a2e;
+    color: #f0f0f0;
+  }
 
-    .public-profile-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        display: flex;
-        gap: 20px;
-        padding: 0 1rem;
-    }
+  .public-profile-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    display: flex;
+    gap: 20px;
+    padding: 0 1rem;
+  }
 
-    /* Sidebar */
-    .profile-sidebar {
-        flex: 0 0 260px;
-        background-color: #2f2f33;
-        border-radius: 16px;
-        padding: 1.5rem;
-        box-shadow: 0 0 30px rgba(0,0,0,0.08);
-    }
-    .profile-sidebar img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 2px solid #666;
-        object-fit: cover;
-        display: block;
-        margin: auto;
-    }
-    .profile-sidebar h3 {
-        text-align: center;
-        margin: 0.75rem 0 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 700;
-    }
-    .profile-sidebar p.bio {
-        text-align: center;
-        color: #ccc;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-    }
+  /* Sidebar */
+  .profile-sidebar {
+    flex: 0 0 260px;
+    background-color: #2f2f33;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 0 30px rgba(0,0,0,0.08);
+  }
+  .profile-sidebar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #666;
+    object-fit: cover;
+    display: block;
+    margin: auto;
+  }
+  .profile-sidebar h3 {
+    text-align: center;
+    margin: 0.75rem 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .profile-sidebar p.bio {
+    text-align: center;
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
 
-    .profile-stats {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-    }
-    .profile-stats .stat {
-        flex: 1;
-        text-align: center;
-    }
-    .profile-stats .stat strong {
-        display: block;
-        font-size: 1.1rem;
-        color: #fff;
-    }
-    .profile-stats .stat small {
-        font-size: 0.8rem;
-        color: #aaa;
-    }
+  /* Styled Stats */
+  .profile-stats-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+  }
+  .stat-box {
+    flex: 1;
+    background-color: #1f1f23;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 8px 0;
+    text-align: center;
+    margin: 0 4px;
+    text-decoration: none;
+    color: #f0f0f0;
+    transition: background-color 0.2s;
+  }
+  .stat-box:hover {
+    background-color: #3a3a3f;
+  }
+  .stat-box strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+  .stat-box small {
+    font-size: 0.8rem;
+    color: #aaa;
+  }
 
-    .public-actions {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-bottom: 1rem;
-    }
-    .public-actions .btn {
-        padding: 4px 8px;
-        font-size: 0.8rem;
-    }
+  .public-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .public-actions .btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
 
-    /* Tweets Column */
-    .tweets-column {
-        flex: 1;
-        max-height: calc(100vh - 150px);
-        overflow-y: auto;
-    }
-    .tweets-column h5 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
+  /* Tweets Column */
+  .tweets-column {
+    flex: 1;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+  }
+  .tweets-column h5 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #e0e0e0;
+  }
 
-    /* Tweet Card */
-    .tweet-card {
-        background-color: #1f1f23;
-        border: 1px solid #444;
-        border-radius: 10px;
-        padding: 0.6rem;
-        margin-bottom: 0.6rem;
-        font-size: 0.85rem;
-    }
-    .tweet-caption {
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-    }
-    .tweet-card img {
-        width: 100%;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-    }
-    .tweet-meta {
-        font-size: 0.75rem;
-        color: #aaa;
-        margin-bottom: 0.4rem;
-    }
+  /* Tweet Card */
+  .tweet-card {
+    background-color: #1f1f23;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 0.6rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tweet-caption {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .tweet-card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .tweet-meta {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-bottom: 0.4rem;
+  }
 
-    .tweet-card .actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .btn-sm-custom {
-        font-size: 0.7rem;
-        padding: 3px 6px;
-    }
+  .tweet-card .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-sm-custom {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
 </style>
 
 <div class="public-profile-container">
@@ -127,15 +143,15 @@
     <img src="{{ target_user.profile.profile_pic.url }}" alt="Profile Picture">
     <h3>@{{ target_user.username }}</h3>
     <p class="bio">{{ target_user.profile.bio|default:"No bio yet." }}</p>
-    <div class="profile-stats">
-      <div class="stat">
+    <div class="profile-stats-row">
+      <a href="{% url 'connections' target_user.username %}#followers" class="stat-box">
         <strong>{{ target_user.profile.followers.count }}</strong>
         <small>Followers</small>
-      </div>
-      <div class="stat">
+      </a>
+      <a href="{% url 'connections' target_user.username %}#following" class="stat-box">
         <strong>{{ target_user.profile.following.count }}</strong>
         <small>Following</small>
-      </div>
+      </a>
     </div>
     {% if user.is_authenticated and user != target_user %}
     <div class="public-actions">
@@ -174,10 +190,10 @@
 </div>
 
 <script>
-// Follow toggle
-... same JS ...
+// Follow toggle JS (unchanged)
 </script>
 {% endblock %}
+
 
 
 
