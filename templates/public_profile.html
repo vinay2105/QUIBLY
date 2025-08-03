@@ -224,9 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!followBtn) return;
 
   followBtn.addEventListener("click", () => {
-    const username = followBtn.dataset.username;
-
-    fetch(`/follow/${username}/`, {
+    fetch("{% url 'follow_toggle' target_user.username %}", {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
@@ -250,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 {% endblock %}
+
 
 
 
