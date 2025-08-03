@@ -4,11 +4,42 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Quibly{% endblock %}</title>
     {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-      /* ——— Splash Overlay ——— */
+      body {
+        padding-top: 70px;
+        background: linear-gradient(145deg, #1e1e22, #2a2a2e);
+        color: #eaeaea;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: rgba(20, 20, 25, 0.95);
+        backdrop-filter: blur(8px);
+      }
+      .navbar-brand {
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .navbar .nav-link {
+        transition: 0.2s;
+      }
+      .navbar .nav-link:hover {
+        color: #4dabf7 !important;
+      }
+
+      /* Flash messages */
+      .alert {
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+      }
+
+      /* Splash screen */
       #splash-screen {
         position: fixed;
         inset: 0;
@@ -20,22 +51,17 @@
         z-index: 1050;
         animation: splashFade 1s ease-out 4s forwards;
       }
-
-      /* Letter pop */
       #splash-screen h1 span {
         display: inline-block;
         color: #eaeaea;
-        font-size: 3rem;
+        font-size: 2.5rem;
         opacity: 0;
         animation: letterPop 0.6s ease-out both;
       }
-
       @keyframes letterPop {
         from { transform: scale(0.3); opacity: 0; }
-        to   { transform: scale(1);   opacity: 1; }
+        to { transform: scale(1); opacity: 1; }
       }
-
-      /* Particle style */
       .particle {
         position: absolute;
         width: 6px; height: 6px;
@@ -44,25 +70,24 @@
         pointer-events: none;
         animation: particleAnim var(--dur) ease-out forwards;
       }
-
       @keyframes particleAnim {
         from { transform: translate(0,0) scale(1); opacity: 1; }
         to   { transform: translate(var(--x), var(--y)) scale(0.3); opacity: 0; }
       }
-
-      /* Fade-out splash */
       @keyframes splashFade {
         to { opacity: 0; visibility: hidden; }
       }
 
-      /* Existing alert fade-out */
-      .fade-out { opacity: 0; transition: opacity 0.3s ease-out; }
+      /* Responsive container */
+      .container {
+        max-width: 1200px;
+      }
 
-      /* Base body */
-      body {
-        padding-top: 70px;
-        background-color: #2a2a2e;
-        color: #eaeaea;
+      /* Mobile tweaks */
+      @media (max-width: 768px) {
+        .navbar-brand { font-size: 1.2rem; }
+        .nav-link i { font-size: 1.1rem; }
+        body { padding-top: 60px; }
       }
     </style>
 </head>
@@ -72,8 +97,8 @@
     <h1 id="splash-text">Welcome to Quibly</h1>
   </div>
 
-  <!-- Navbar… -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand fw-bold" href="{% url 'home' %}">Quibly</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -81,14 +106,16 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         {% if user.is_authenticated %}
-        <form class="d-flex align-items-center me-3 position-relative" method="get" action="{% url 'search_users' %}" style="min-width:200px;">
-          <input id="searchInput" class="form-control form-control-sm bg-dark text-white border-0 ps-3 pe-4 rounded-pill"
-                 type="search" name="q" placeholder="Search users..." aria-label="Search"
-                 style="box-shadow: inset 0 0 8px rgba(255,255,255,0.1); height:36px;">
+        <form class="d-flex align-items-center me-3 position-relative w-auto flex-grow-1" 
+              method="get" action="{% url 'search_users' %}" style="max-width: 250px;">
+          <input id="searchInput" 
+                 class="form-control form-control-sm bg-dark text-white border-0 ps-3 pe-4 rounded-pill"
+                 type="search" name="q" placeholder="Search users..." aria-label="Search">
           <i id="searchIcon" class="bi bi-search position-absolute text-white"
              style="right:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
         </form>
         {% endif %}
+
         <ul class="navbar-nav align-items-center">
           {% if user.is_authenticated %}
             <li class="nav-item me-2"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house-door-fill fs-5"></i></a></li>
@@ -112,7 +139,7 @@
     </div>
   </nav>
 
-  <!-- Flash messages… -->
+  <!-- Flash messages -->
   {% if messages %}
     <div class="container mt-3" id="flash-message-container">
       {% for message in messages %}
@@ -125,60 +152,53 @@
   {% endif %}
 
   <!-- Main content -->
-  <div class="container mt-3">
+  <div class="container my-3">
     {% block content %}{% endblock %}
   </div>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const splash = document.getElementById('splash-screen');
-  if (sessionStorage.getItem('quiblySplashShown')) {
-    splash.style.display = 'none';
-    return;
-  }
-
-  // 1) Staggered letter pop-in (now preserves spaces)
-  const textEl = document.getElementById('splash-text');
-  const chars  = textEl.textContent.split('');    // no trim, keep spaces
-  textEl.innerHTML = '';
-  chars.forEach((c, i) => {
-    const span = document.createElement('span');
-    // if it's a normal space, render it as a non‑breaking space so it shows
-    span.textContent = (c === ' ' ? '\u00A0' : c);
-    span.style.animationDelay = `${i * 0.1}s`;
-    textEl.appendChild(span);
-  });
-
-  // 2) Particle burst
-  const burst = () => {
-    const count = 80;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.classList.add('particle');
-      const angle = Math.random() * 2 * Math.PI;
-      const dist  = 50 + Math.random() * 100;
-      p.style.setProperty('--x', Math.cos(angle) * dist + 'px');
-      p.style.setProperty('--y', Math.sin(angle) * dist + 'px');
-      p.style.setProperty('--dur', (0.8 + Math.random() * 0.8) + 's');
-      splash.appendChild(p);
+  document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash-screen');
+    if (sessionStorage.getItem('quiblySplashShown')) {
+      splash.style.display = 'none';
+      return;
     }
-  };
-
-  splash.addEventListener('animationstart', e => {
-    if (e.animationName === 'splashFade') burst();
+    const textEl = document.getElementById('splash-text');
+    const chars  = textEl.textContent.split('');
+    textEl.innerHTML = '';
+    chars.forEach((c, i) => {
+      const span = document.createElement('span');
+      span.textContent = (c === ' ' ? '\u00A0' : c);
+      span.style.animationDelay = `${i * 0.1}s`;
+      textEl.appendChild(span);
+    });
+    const burst = () => {
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const angle = Math.random() * 2 * Math.PI;
+        const dist  = 50 + Math.random() * 100;
+        p.style.setProperty('--x', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--y', Math.sin(angle) * dist + 'px');
+        p.style.setProperty('--dur', (0.8 + Math.random() * 0.8) + 's');
+        splash.appendChild(p);
+      }
+    };
+    splash.addEventListener('animationstart', e => {
+      if (e.animationName === 'splashFade') burst();
+    });
+    splash.addEventListener('animationend', e => {
+      if (e.animationName === 'splashFade') splash.remove();
+    });
+    sessionStorage.setItem('quiblySplashShown', 'true');
   });
-  splash.addEventListener('animationend', e => {
-    if (e.animationName === 'splashFade') splash.remove();
-  });
-
-  sessionStorage.setItem('quiblySplashShown', 'true');
-});
-</script>
+  </script>
 </body>
 </html>
+
 
 
 

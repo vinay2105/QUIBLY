@@ -3,86 +3,97 @@
 
 {% block content %}
 <style>
+  .auth-container {
+    max-width: 420px;
+    margin: 3rem auto;
+    background: rgba(31,31,35,0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    padding: 2rem 1.5rem;
+    color: #eaeaea;
+    transition: 0.3s;
+  }
+  .auth-container:hover {
+    transform: translateY(-2px);
+  }
+
+  .quibly-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4dabf7;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .auth-heading {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #cccccc;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    background: rgba(43,43,47,0.9);
+    border: 1px solid #555;
+    color: #ffffff;
+    padding: 0.55rem 0.75rem;
+  }
+  .form-control::placeholder {
+    color: #aaaaaa;
+  }
+  .form-control:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 0.15rem rgba(74,173,247,0.25);
+  }
+
+  .btn-auth {
+    border-radius: 10px;
+    padding: 0.55rem 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(90deg,#4dabf7,#1e90ff);
+    border: none;
+    color: #fff;
+    transition: 0.3s;
+  }
+  .btn-auth:hover {
+    transform: scale(1.03);
+    background: linear-gradient(90deg,#74c0fc,#339af0);
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  .form-footer a {
+    text-decoration: none;
+    color: #bbbbbb;
+    transition: 0.2s;
+  }
+  .form-footer a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
     .auth-container {
-        max-width: 420px;
-        margin: 3rem auto;
-        background-color: #1f1f23;
-        border-radius: 16px;
-        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
-        padding: 2rem;
-        color: #eaeaea;
+      margin: 2rem 1rem;
+      padding: 1.5rem 1rem;
     }
-
-    .quibly-logo {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #ffffff;
-        text-align: center;
-        margin-bottom: 1rem;
-        letter-spacing: 1px;
-    }
-
-    .auth-heading {
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        font-size: 1.25rem;
-        color: #f1f1f1;
-    }
-
-    .form-label {
-        font-weight: 500;
-        color: #cccccc;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        background-color: #2a2a2e;
-        border: 1px solid #555;
-        color: #ffffff;
-    }
-
-    .form-control::placeholder {
-        color: #aaaaaa;
-    }
-
     .btn-auth {
-        border-radius: 8px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 500;
-        background-color: #343a40;
-        border-color: #343a40;
-        color: white;
+      width: 100%;
     }
-
-    .btn-auth:hover {
-        background-color: #23272b;
-        border-color: #23272b;
-    }
-
-    .form-footer {
-        text-align: center;
-        margin-top: 1rem;
-    }
-
-    .form-footer a {
-        text-decoration: none;
-        color: #bbbbbb;
-    }
-
-    .form-footer a:hover {
-        text-decoration: underline;
-        color: #ffffff;
-    }
-
-    .alert {
-        font-size: 0.9rem;
-        background-color: #343a40;
-        color: #ffffff;
-        border: 1px solid #444;
-    }
+  }
 </style>
-
 
 <div class="auth-container">
     <div class="quibly-logo">Welcome to Quibly</div>
@@ -116,6 +127,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 
 

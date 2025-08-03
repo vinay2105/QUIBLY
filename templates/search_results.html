@@ -3,59 +3,80 @@
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-    }
+  .search-results-container {
+    max-width: 750px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
 
-    .search-results-container {
-        max-width: 700px;
-        margin: auto;
-        background-color: #1f1f23;
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-        color: #e6e6e6;
-    }
+  .search-heading {
+    color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 
-    .result-item {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        background-color: #2b2b2f;
-        border-radius: 12px;
-        transition: background 0.2s;
-    }
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(43,43,47,0.95);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    transition: 0.3s;
+    color: #e6e6e6;
+    text-decoration: none;
+  }
+  .result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    background: rgba(74,173,247,0.12);
+    text-decoration: none;
+  }
 
-    .result-item:hover {
-        background-color: #343a40;
-    }
+  .result-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #4dabf7;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
 
+  .result-info h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .result-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #aaaaaa;
+  }
+
+  .text-muted {
+    text-align: center;
+    color: #aaa;
+    margin-top: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
     .result-item img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 15px;
+      width: 50px;
+      height: 50px;
     }
-
     .result-info h5 {
-        margin: 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #fff;
+      font-size: 1rem;
     }
-
     .result-info p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: #aaa;
+      font-size: 0.8rem;
     }
-
-    .search-heading {
-        color: #fff;
-        margin-bottom: 1.5rem;
-    }
+  }
 </style>
 
 <div class="search-results-container">
@@ -63,7 +84,7 @@
 
     {% if users %}
         {% for user in users %}
-            <a href="{% url 'public_profile' user.username %}" class="result-item text-decoration-none text-white">
+            <a href="{% url 'public_profile' user.username %}" class="result-item">
                 <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
                 <div class="result-info">
                     <h5>@{{ user.username }}</h5>
@@ -76,3 +97,4 @@
     {% endif %}
 </div>
 {% endblock %}
+

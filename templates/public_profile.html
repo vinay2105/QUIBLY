@@ -3,138 +3,162 @@
 
 {% block content %}
 <style>
-  body {
-    background-color: #2a2a2e;
-    color: #f0f0f0;
-  }
-
   .public-profile-container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 2rem auto;
     display: flex;
-    gap: 20px;
+    gap: 30px;
     padding: 0 1rem;
+    flex-wrap: wrap;
   }
 
   /* Sidebar */
   .profile-sidebar {
-    flex: 0 0 260px;
-    background-color: #2f2f33;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 0 30px rgba(0,0,0,0.08);
+    flex: 0 0 280px;
+    background: rgba(31,31,35,0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 1.8rem 1.5rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    text-align: center;
+    transition: 0.3s;
+  }
+  .profile-sidebar:hover {
+    transform: translateY(-2px);
   }
   .profile-sidebar img {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
-    border: 2px solid #666;
+    border: 3px solid #4dabf7;
     object-fit: cover;
-    display: block;
-    margin: auto;
+    margin-bottom: 0.8rem;
   }
   .profile-sidebar h3 {
-    text-align: center;
-    margin: 0.75rem 0 0.5rem;
-    font-size: 1.25rem;
+    margin-bottom: 0.3rem;
+    font-size: 1.3rem;
     font-weight: 700;
+    color: #fff;
   }
   .profile-sidebar p.bio {
-    text-align: center;
     color: #ccc;
     font-size: 0.9rem;
     margin-bottom: 1rem;
   }
 
-  /* Styled Stats */
+  /* Stats */
   .profile-stats-row {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
   }
   .stat-box {
     flex: 1;
-    background-color: #1f1f23;
+    background: rgba(43,43,47,0.95);
     border: 1px solid #444;
-    border-radius: 8px;
-    padding: 8px 0;
+    border-radius: 10px;
+    padding: 10px 0;
     text-align: center;
-    margin: 0 4px;
+    margin: 0 5px;
     text-decoration: none;
     color: #f0f0f0;
-    transition: background-color 0.2s;
-  }
-  .stat-box:hover {
-    background-color: #3a3a3f;
+    transition: 0.3s;
   }
   .stat-box strong {
     display: block;
-    font-size: 1.1rem;
-    margin-bottom: 2px;
+    font-size: 1.15rem;
+    color: #4dabf7;
   }
-  .stat-box small {
-    font-size: 0.8rem;
-    color: #aaa;
+  .stat-box:hover {
+    background: rgba(74, 173, 247, 0.15);
+    transform: translateY(-2px);
   }
 
+  /* Follow/Message buttons */
   .public-actions {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
   .public-actions .btn {
-    padding: 4px 8px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+  .btn-follow {
+    font-weight: 600;
   }
 
   /* Tweets Column */
   .tweets-column {
     flex: 1;
-    max-height: calc(100vh - 180px);
-    overflow-y: auto;
+    background: rgba(31,31,35,0.9);
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+    padding: 1.5rem;
   }
   .tweets-column h5 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #e0e0e0;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #fff;
+    font-weight: 600;
   }
 
   /* Tweet Card */
   .tweet-card {
-    background-color: #1f1f23;
+    background: rgba(43,43,47,0.95);
     border: 1px solid #444;
-    border-radius: 10px;
-    padding: 0.6rem;
-    margin-bottom: 0.6rem;
-    font-size: 0.8rem;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    transition: 0.3s;
+  }
+  .tweet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
   }
   .tweet-caption {
     font-weight: 600;
     margin-bottom: 0.4rem;
+    color: #4dabf7;
   }
   .tweet-card img {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 0.5rem;
   }
   .tweet-meta {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: #aaa;
     margin-bottom: 0.4rem;
   }
-
   .tweet-card .actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
   }
   .btn-sm-custom {
-    font-size: 0.7rem;
-    padding: 3px 6px;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  /* Responsive */
+  @media (max-width: 992px) {
+    .public-profile-container {
+      flex-direction: column;
+    }
+    .profile-sidebar {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
   }
 </style>
 
@@ -143,6 +167,7 @@
     <img src="{{ target_user.profile.profile_pic.url }}" alt="Profile Picture">
     <h3>@{{ target_user.username }}</h3>
     <p class="bio">{{ target_user.profile.bio|default:"No bio yet." }}</p>
+
     <div class="profile-stats-row">
       <a href="{% url 'connections' target_user.username %}#followers" class="stat-box">
         <strong>{{ target_user.profile.followers.count }}</strong>
@@ -153,9 +178,11 @@
         <small>Following</small>
       </a>
     </div>
+
     {% if user.is_authenticated and user != target_user %}
     <div class="public-actions">
-      <button class="btn-follow btn {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}" data-username="{{ target_user.username }}">
+      <button class="btn btn-follow {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}" 
+              data-username="{{ target_user.username }}">
         {% if is_following %}Unfollow{% else %}Follow{% endif %}
       </button>
       {% if user.profile in target_user.profile.followers.all and target_user.profile in user.profile.followers.all %}
@@ -170,11 +197,12 @@
     {% for tweet in target_user.tweets.all|dictsortreversed:"created_at" %}
     <div class="tweet-card">
       {% if tweet.caption %}<p class="tweet-caption">{{ tweet.caption }}</p>{% endif %}
-      {% if tweet.image %}<img src="{{ tweet.image.url }}" alt="Tweet Image">{% endif %}
+      {% if tweet.image %}<img src="{{ tweet.image.url }}" alt="Tweet Image" class="img-fluid">{% endif %}
       {% if tweet.content %}<p>{{ tweet.content }}</p>{% endif %}
       <p class="tweet-meta">{{ tweet.created_at|date:"M d, H:i" }}</p>
       <div class="actions">
-        <button class="btn-like btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}" data-tweet-id="{{ tweet.id }}">
+        <button class="btn-like btn btn-sm-custom {% if user in tweet.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}" 
+                data-tweet-id="{{ tweet.id }}">
           ❤️ <span class="like-count">{{ tweet.total_likes }}</span>
         </button>
         <div>
@@ -190,9 +218,10 @@
 </div>
 
 <script>
-// Follow toggle JS (unchanged)
+// Follow toggle logic placeholder (same as original if JS is included elsewhere)
 </script>
 {% endblock %}
+
 
 
 

@@ -1,88 +1,101 @@
 {% extends 'base.html' %}
-{% block title %}Messages{% endblock %}
+{% block title %}Messages - Quibly{% endblock %}
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-    }
+  .conversation-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
 
-    .conversation-container {
-        max-width: 700px;
-        margin: 2rem auto;
-    }
+  .conversation-title {
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
 
-    .conversation-title {
-        color: #fff;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
+  .conversation-card {
+    background: rgba(43,43,47,0.95);
+    backdrop-filter: blur(6px);
+    border: 1px solid #444;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  }
 
-    .conversation-card {
-        background-color: #2b2b2f;
-        border: 1px solid #444;
-        border-radius: 12px;
-        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
-    }
+  .conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #444;
+    color: #e6e6e6;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  .conversation-item:last-child {
+    border-bottom: none;
+  }
+  .conversation-item:hover {
+    background: rgba(74,173,247,0.12);
+    transform: translateY(-1px);
+  }
 
-    .conversation-item {
-        display: flex;
-        align-items: center;
-        padding: 14px 18px;
-        border-bottom: 1px solid #444;
-        color: #e6e6e6;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out;
-    }
+  .conversation-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #4dabf7;
+  }
 
-    .conversation-item:last-child {
-        border-bottom: none;
-    }
+  .conversation-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
 
-    .conversation-item:hover {
-        background-color: #3a3a3f;
-    }
+  .no-chat {
+    padding: 2rem;
+    text-align: center;
+    color: #aaa;
+  }
 
+  /* Responsive */
+  @media (max-width: 576px) {
     .conversation-item img {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 15px;
+      width: 42px;
+      height: 42px;
     }
-
     .conversation-name {
-        font-size: 1rem;
-        font-weight: 500;
+      font-size: 0.95rem;
     }
-
-    .no-chat {
-        padding: 2rem;
-        text-align: center;
-        color: #b0b0b0;
-    }
+  }
 </style>
 
 <div class="conversation-container">
-    <h4 class="conversation-title">Your Conversations</h4>
+  <h4 class="conversation-title">Your Conversations</h4>
 
-    {% if threads %}
-        <div class="conversation-card">
-            {% for thread in threads %}
-                {% for user in thread.users.all %}
-                    {% if user != request.user %}
-                        <a href="{% url 'chat_detail' user.username %}" class="conversation-item">
-                            <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
-                            <div class="conversation-name">@{{ user.username }}</div>
-                        </a>
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="no-chat">No conversations yet. Start chatting with someone you follow.</div>
-    {% endif %}
+  {% if threads %}
+    <div class="conversation-card">
+      {% for thread in threads %}
+        {% for user in thread.users.all %}
+          {% if user != request.user %}
+            <a href="{% url 'chat_detail' user.username %}" class="conversation-item">
+              <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
+              <div class="conversation-name">@{{ user.username }}</div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-chat">No conversations yet. Start chatting with someone you follow.</div>
+  {% endif %}
 </div>
 {% endblock %}
+
 
 

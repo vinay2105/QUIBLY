@@ -3,70 +3,71 @@
 
 {% block content %}
 <style>
-  body {
-    background-color: #2a2a2e;
-    color: #e6e6e6;
-  }
-
   .connections-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 2rem auto;
     padding: 0 1rem;
   }
 
+  /* Profile header */
   .connections-header {
     text-align: center;
     margin-bottom: 2rem;
   }
-
   .connections-header img {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    border: 2px solid #444;
+    border: 3px solid #4dabf7;
+    object-fit: cover;
+    margin-bottom: 0.6rem;
   }
-
   .connections-header h3 {
-    margin-top: 0.5rem;
-    font-weight: 600;
-  }
-
-  .nav-pills {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .nav-pills .nav-link {
-    background-color: #3a3a3f;
-    color: #e6e6e6;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-    border: none;
-  }
-
-  .nav-pills .nav-link.active {
-    background-color: #555;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
     color: #fff;
   }
 
+  /* Tabs */
+  .nav-pills {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .nav-pills .nav-link {
+    background: rgba(58,58,63,0.8);
+    color: #e6e6e6;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid #444;
+    transition: 0.3s;
+    font-weight: 500;
+  }
+  .nav-pills .nav-link:hover {
+    background: rgba(74,173,247,0.15);
+  }
+  .nav-pills .nav-link.active {
+    background: #4dabf7;
+    color: #fff;
+  }
+
+  /* Connection List */
   .list-group {
     padding-left: 0;
   }
-
   .list-group-item {
-    background-color: #2b2b2f;
+    background: rgba(43,43,47,0.9);
     border: 1px solid #444;
-    border-radius: 8px;
-    margin-bottom: 0.6rem;
-    transition: background-color 0.2s;
+    border-radius: 12px;
+    margin-bottom: 0.7rem;
+    transition: 0.3s;
     padding: 0.6rem 0.8rem;
   }
-
   .list-group-item:hover {
-    background-color: #3a3a3f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
   }
 
   .list-group-item a {
@@ -75,19 +76,35 @@
     color: #e6e6e6;
     text-decoration: none;
   }
-
   .list-group-item a img {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    border: 1px solid #555;
+    border: 2px solid #4dabf7;
     margin-right: 0.75rem;
+    object-fit: cover;
   }
 
   .no-connections {
     text-align: center;
     color: #aaa;
-    padding: 1rem 0;
+    padding: 1.2rem 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
+    .connections-header img {
+      width: 70px;
+      height: 70px;
+    }
+    .nav-pills .nav-link {
+      padding: 0.45rem 1rem;
+      font-size: 0.85rem;
+    }
+    .list-group-item a img {
+      width: 36px;
+      height: 36px;
+    }
   }
 </style>
 
@@ -102,25 +119,35 @@
   <ul class="nav nav-pills" id="connTabs" role="tablist">
     {% if profile_user != request.user %}
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#mutual" type="button">Mutual ({{ mutual|length }})</button>
+        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#mutual" type="button">
+          Mutual ({{ mutual|length }})
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#following" type="button">Following ({{ following|length }})</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#following" type="button">
+          Following ({{ following|length }})
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#followers" type="button">Followers ({{ followers|length }})</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#followers" type="button">
+          Followers ({{ followers|length }})
+        </button>
       </li>
     {% else %}
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#following" type="button">Following ({{ following|length }})</button>
+        <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#following" type="button">
+          Following ({{ following|length }})
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#followers" type="button">Followers ({{ followers|length }})</button>
+        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#followers" type="button">
+          Followers ({{ followers|length }})
+        </button>
       </li>
     {% endif %}
   </ul>
 
-  <!-- Content Panes -->
+  <!-- Tab Content -->
   <div class="tab-content mt-3">
     {% if profile_user != request.user %}
     <div class="tab-pane fade show active" id="mutual" role="tabpanel">
@@ -177,6 +204,7 @@
   </div>
 </div>
 {% endblock %}
+
 
 
 

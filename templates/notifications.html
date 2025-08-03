@@ -1,48 +1,56 @@
 {% extends 'base.html' %}
-{% block title %}Notifications{% endblock %}
+{% block title %}Notifications - Quibly{% endblock %}
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-    }
+  .notif-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
 
-    .notif-container {
-        max-width: 700px;
-        margin: 1.5rem auto;
-    }
+  .notif-title {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+  }
 
-    .notif-title {
-        color: #ffffff;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
+  .notif-card {
+    background: rgba(43,43,47,0.95);
+    backdrop-filter: blur(6px);
+    border: 1px solid #444;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    color: #e6e6e6;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    transition: 0.3s;
+  }
+  .notif-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
 
+  .notif-timestamp {
+    font-size: 0.8rem;
+    color: #9aa0a6;
+  }
+
+  .no-notif {
+    color: #aaa;
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
     .notif-card {
-        background-color: #2b2b2f;
-        border: 1px solid #444;
-        border-radius: 12px;
-        padding: 1rem 1.25rem;
-        color: #e6e6e6;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: all 0.2s ease-in-out;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
     }
-
-    .notif-card:hover {
-        box-shadow: 0 4px 18px rgba(255,255,255,0.05);
-    }
-
-    .notif-timestamp {
-        font-size: 0.85rem;
-        color: #b5b5b5;
-    }
-
-    .no-notif {
-        color: #ccc;
-        text-align: center;
-        margin-top: 3rem;
-    }
+  }
 </style>
 
 <div class="notif-container">
@@ -58,4 +66,5 @@
     {% endfor %}
 </div>
 {% endblock %}
+
 

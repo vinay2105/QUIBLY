@@ -3,110 +3,114 @@
 
 {% block content %}
 <style>
-    body {
-        background-color: #2a2a2e;
-    }
+  .edit-container {
+    max-width: 650px;
+    margin: 2.5rem auto;
+    background: rgba(31,31,35,0.95);
+    backdrop-filter: blur(8px);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    color: #e6e6e6;
+    transition: 0.3s;
+  }
+  .edit-container:hover {
+    transform: translateY(-2px);
+  }
 
+  .edit-container h2 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 2rem;
+    font-weight: 700;
+  }
+
+  .form-group {
+    margin-bottom: 1.4rem;
+  }
+
+  label {
+    font-weight: 500;
+    color: #cccccc;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .form-control {
+    background: rgba(43,43,47,0.9) !important;
+    border: 1px solid #444;
+    color: #ffffff !important;
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .form-control::placeholder {
+    color: #aaaaaa;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Profile Image Preview */
+  .profile-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .profile-preview img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #4dabf7;
+    margin-bottom: 0.8rem;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+  .custom-file-label {
+    background: linear-gradient(90deg,#4dabf7,#1e90ff);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .custom-file-label:hover {
+    background: linear-gradient(90deg,#74c0fc,#339af0);
+  }
+
+  /* Save Button */
+  .btn-save {
+    background: linear-gradient(90deg,#4dabf7,#1e90ff);
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1.8rem;
+    border: none;
+    border-radius: 10px;
+    transition: 0.3s;
+    display: block;
+    margin: 1rem auto 0;
+  }
+  .btn-save:hover {
+    transform: scale(1.03);
+    background: linear-gradient(90deg,#74c0fc,#339af0);
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
     .edit-container {
-        max-width: 650px;
-        margin: 2.5rem auto;
-        background-color: #1f1f23;
-        padding: 2.5rem;
-        border-radius: 20px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-        color: #e6e6e6;
+      padding: 2rem 1.2rem;
     }
-
-    .edit-container h2 {
-        text-align: center;
-        color: #ffffff;
-        margin-bottom: 2rem;
-        font-weight: bold;
-    }
-
-    .form-group {
-        margin-bottom: 1.4rem;
-    }
-
-    label {
-        font-weight: 500;
-        color: #cccccc;
-        margin-bottom: 0.4rem;
-        display: block;
-    }
-
-    .form-control {
-        background-color: #2b2b2f !important;
-        border: 1px solid #444;
-        color: #ffffff !important;
-        border-radius: 8px;
-        padding: 0.6rem 0.75rem;
-    }
-
-    .form-control::placeholder {
-        color: #aaaaaa;
-    }
-
-    textarea.form-control {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .profile-preview {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .profile-preview img {
-        width: 130px;
-        height: 130px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #555;
-        margin-bottom: 0.8rem;
-    }
-
-    input[type="file"] {
-        color: transparent;
-    }
-
-    input[type="file"]::-webkit-file-upload-button {
-        visibility: hidden;
-    }
-
-    input[type="file"]::before {
-        content: 'Change Photo';
-        display: inline-block;
-        background: #343a40;
-        color: white;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-    }
-
-    input[type="file"]:hover::before {
-        background: #2c2c2f;
-    }
-
     .btn-save {
-        background-color: #343a40;
-        color: white;
-        font-weight: 600;
-        padding: 0.6rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        transition: background-color 0.2s;
-        display: block;
-        margin: 1rem auto 0;
+      width: 100%;
     }
-
-    .btn-save:hover {
-        background-color: #2c2c2f;
-    }
+  }
 </style>
 
 <div class="edit-container">
@@ -115,13 +119,11 @@
         {% csrf_token %}
 
         <!-- Profile Picture Section -->
-        <div class="text-center mb-4">
-    <img id="profilePicPreview" src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #ccc;">
-
-    <div class="mt-2">
-        <input type="file" name="profile_pic" id="id_profile_pic">
-    </div>
-</div>
+        <div class="profile-preview">
+          <img id="profilePicPreview" src="{{ user.profile.profile_pic.url }}" alt="Profile Picture">
+          <label for="id_profile_pic" class="custom-file-label mt-2">Change Photo</label>
+          <input type="file" name="profile_pic" id="id_profile_pic">
+        </div>
 
         <!-- Input Fields -->
         <div class="form-group">
@@ -149,24 +151,24 @@
 </div>
 
 <script>
-    // Profile image preview logic
-    const profilePicInput = document.getElementById("id_profile_pic");
-    const profilePicPreview = document.getElementById("profilePicPreview");
+  const profilePicInput = document.getElementById("id_profile_pic");
+  const profilePicPreview = document.getElementById("profilePicPreview");
 
-    if (profilePicInput) {
-        profilePicInput.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    profilePicPreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
+  if (profilePicInput) {
+      profilePicInput.addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                  profilePicPreview.src = e.target.result;
+              };
+              reader.readAsDataURL(file);
+          }
+      });
+  }
 </script>
 {% endblock %}
+
 
 
 
