@@ -181,7 +181,8 @@
 
     {% if user.is_authenticated and user != target_user %}
     <div class="public-actions">
-      <button class="btn btn-follow {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}" 
+      <button id="follow-btn"
+              class="btn btn-follow {% if is_following %}btn-danger{% else %}btn-outline-primary{% endif %}"
               data-username="{{ target_user.username }}">
         {% if is_following %}Unfollow{% else %}Follow{% endif %}
       </button>
@@ -218,9 +219,38 @@
 </div>
 
 <script>
-// Follow toggle logic placeholder (same as original if JS is included elsewhere)
+document.addEventListener("DOMContentLoaded", () => {
+  const followBtn = document.getElementById("follow-btn");
+  if (!followBtn) return;
+
+  followBtn.addEventListener("click", () => {
+    const username = followBtn.dataset.username;
+
+    fetch(`/follow/${username}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.following) {
+        followBtn.textContent = "Unfollow";
+        followBtn.classList.remove("btn-outline-primary");
+        followBtn.classList.add("btn-danger");
+      } else {
+        followBtn.textContent = "Follow";
+        followBtn.classList.remove("btn-danger");
+        followBtn.classList.add("btn-outline-primary");
+      }
+    })
+    .catch(err => console.error(err));
+  });
+});
 </script>
 {% endblock %}
+
 
 
 
